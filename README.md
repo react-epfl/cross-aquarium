@@ -22,4 +22,6 @@ gems.js       representation of an alias
 fish.js       representation of a member
 
 bubble.js     
+
+sketch.js     wrapper where things are initialized, updated and drawn
 ```
