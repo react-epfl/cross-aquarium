@@ -21,7 +21,11 @@ Branch.prototype = {
         push();
         translate(this.position.x, this.position.y);
         noFill();
-        stroke(9, 182, 125);
+        if(!zen) {
+            stroke(40, 180, 55);
+        } else {
+            stroke(32, 145, 85);
+        }
         var index = 0;
         for(var i = 0, l = this.springs.length; i < l; i++) {
             line(this.springs[i].a.x, this.springs[i].a.y,

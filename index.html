@@ -42,10 +42,16 @@
             <input type="button" value="Reset" onclick="location.reload();" />
             <input id="uploadJSON" accept=".json" type="file" />
         </div>
+        <script src="js/p5.min.js"></script>
+        <script src="js/toxiclibs.min.js"></script>
+        <script src="js/utils.js"></script>
+        <script src="js/jsonReader.js"></script>
         <script>
             document.body.addEventListener('touchmove', function(e) {
                 e.preventDefault();
             }, false);
+
+            var zen = false;
 
             var uploadJSON = document.getElementById('uploadJSON');
             uploadJSON.addEventListener('change', function(e) {
@@ -54,64 +60,7 @@
                     var reader = new FileReader();
                     reader.readAsText(file, "UTF-8");
                     reader.addEventListener('load', function(e) {
-                        json = JSON.parse(e.target.result);
-                        console.log(json);
-                        for(var i = 0, l = json.items.length; i < l; i++) {
-                            if(json.items[i]._type == "Alias") {
-
-                            } else {
-                                var type;
-                                switch(json.items[i]._type) {
-                                    case "Resource":
-                                        type = 0;
-                                        break;
-
-                                    case "Application":
-                                        type = 1;
-                                        break;
-
-                                    case "Topic":
-                                        type = 2;
-                                        break;
-
-                                    case "Space":
-                                        type = 3;
-                                        break;
-                                }
-                                var age = new Date(json.items[i].created);
-                                age = age.getTime();
-                                age = (Date.now() - age) / 1000 / 60 / 60 / 24;
-                                var last = new Date(json.items[i].modified);
-                                last = last.getTime();
-                                last = (Date.now() - last) / 1000 / 60 / 60 / 24;
-                                last *= random() < .5 ? -1 : 1;
-                                addRock(random(0, width), height - height/12,
-                                        constrain(map(age, 0, 1095, height/6, height/1.5), height/6, height/1.5),
-                                        constrain(map(last, -365, 365, -PI/10, PI/10), -PI/10, PI/10),
-                                        type, shapes[type]);
-                                rocks[rocks.length - 1].addAlgae();
-                                for(var j = 0, ll = json.items[i].comments.length; j < ll; j++) {
-                                    rocks[rocks.length - 1].addLeaf();
-                                    if(json.items[i].comments[j].replies) {
-                                        for(var k = 0, lll = json.items[i].comments[j].replies.length; k < lll; k++) {
-                                            rocks[rocks.length - 1].addLeaf(j);
-                                        }
-                                    }
-                                }
-                                displayTree.push([]);
-                            }
-                        }
-                        for(var i = 0, l = json.members.length; i < l; i++) {
-                            var index = constrain(map(json.members[i].metrics.contributor, 1, 7, 0, displayTree.length - 1), 0, displayTree.length - 1);
-                            index = Math.floor(index);
-                            var body = fishBodies[constrain(json.members[i].metrics.graasper - 1, 0, 2)];
-                            var tail = json.members[i].metrics.graasper > 3 ? fishTails[json.members[i].metrics.graasper - 4] : undefined;
-                            var scale = constrain(map(json.members.length, 1, 300, .8, .5), .5, .8);
-                            if(i < 300) {
-                                fishes.push(new Fish(new Vec2D(width/2, -50), 3.0, 0.1, body, tail, scale));
-                                displayTree[index].push(fishes[fishes.length - 1]);
-                            }
-                        }
+                        readJSON(e.target.result);
                         intro = true;
                         introBeginning = step;
                         uploadJSON.disabled = true;
@@ -121,15 +70,13 @@
                 }
             }, false);
         </script>
-        <script src="js/p5.min.js"></script>
-        <script src="js/toxiclibs.min.js"></script>
-        <script src="js/utils.js"></script>
         <script src="js/flowfield.js"></script>
         <script src="js/branch.js"></script>
         <script src="js/algae.js"></script>
         <script src="js/rock.js"></script>
         <script src="js/fish.js"></script>
         <script src="js/bubble.js"></script>
+        <script src="js/gem.js"></script>
         <script src="js/sketch.js"></script>
     </body>
 </html>

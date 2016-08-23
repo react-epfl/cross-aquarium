@@ -1,4 +1,4 @@
-var Fish = function(position, maxSpeed, maxForce, body, tail, scale) {
+var Fish = function(position, maxSpeed, maxForce, body, tail) {
     this.position     = position;
     this.angle        = 0;
     this.previousAngle= 0;
@@ -9,7 +9,6 @@ var Fish = function(position, maxSpeed, maxForce, body, tail, scale) {
     this.maxForce     = maxForce;
     this.body         = body;
     this.tail         = tail;
-    this.scale        = scale;
     this.life         = random(1000);
 }
 
@@ -196,20 +195,18 @@ Fish.prototype = {
         return sum;
     },
 
-    display: function(index, last) {
+    display: function(s) {
         push();
-        translate(width/2, height/2);
-        scale(map(index, 0, last, .6, 1));
-        translate(-width/2, -height/2);
+        translate(map(mouseX, 0, width, width/3, 2 * width/3), map(mouseY, 0, height, height/3, 2 * height/3));
+        scale(s);
+        translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
         translate(this.position.x, this.position.y);
         rotate(this.angle);
-        scale(this.scale);
-        scale(constrain(map(this.velocity.magnitude(), 0, this.maxSpeed, 0.75, 1), 0.75, 1),
-              constrain(map(this.velocity.magnitude(), 0, this.maxSpeed, 1, 0.75), 0.75, 1));
+        scale(.7);
         push();
         rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
         if(typeof this.tail !== 'undefined') {
-            image(this.tail, -this.body.width - 20, -this.tail.height / 2);
+            image(this.tail, -this.tail.width, -this.tail.height / 2);
         }
         pop();
         image(this.body, -this.body.width / 2, -this.body.height / 2);

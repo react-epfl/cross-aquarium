@@ -3,42 +3,67 @@ var S_TRIANGLE = 3,
     S_HEXAGON  = 6,
     S_CIRCLE   = 20;
 
-var R = 9, G = 7, B = 125,
-    currentColor = {'r': 9, 'g': 7, 'b': 125};
+var currentColor;
+if(!zen) {
+    currentColor = {'r': 0, 'g': 250, 'b': 250};
+} else {
+    currentColor = {'r': 20, 'g': 10, 'b': 30};
+}
 
-var json,
-    physics,
-    step    = 0,
-    rocks   = [],
-    gems    = [],
-    bubbles = [],
-    fishes  = [],
+var physics,
+    step          = 0,
+    rocks         = [],
+    gems          = [],
+    bubbles       = [],
+    fishes        = [],
     fishBodiesImg = [],
     fishTailsImg  = [],
     fishBodies    = [],
     fishTails     = [],
     flowfield,
-    displayTree = [];
+    displayTree   = [],
+    canvas,
+    bg,
+    halo,
+    topGradient,
+    bottomGradient,
+    leftGradient,
+    rightGradient,
+    debug         = false,
+    intro         = false,
+    introBeginning;
 
 var algaeKind = 1;
 
 function preload() {
-    fishBodiesImg.push(loadImage('imgs/fish_body_1.png'));
-    fishBodiesImg.push(loadImage('imgs/fish_body_2.png'));
-    fishBodiesImg.push(loadImage('imgs/fish_body_3.png'));
-    fishTailsImg.push(loadImage('imgs/fish_tail_1.png'));
-    fishTailsImg.push(loadImage('imgs/fish_tail_2.png'));
-    fishTailsImg.push(loadImage('imgs/fish_tail_3.png'));
-    fishTailsImg.push(loadImage('imgs/fish_tail_4.png'));
+    fishBodiesImg.push(loadImage('imgs/zen/fish_body_1.png'));
+    fishBodiesImg.push(loadImage('imgs/zen/fish_body_2.png'));
+    fishBodiesImg.push(loadImage('imgs/zen/fish_body_3.png'));
+    fishBodiesImg.push(loadImage('imgs/zen/fish_body_4.png'));
+    fishTailsImg.push(loadImage('imgs/zen/fish_tail_1.png'));
+    fishTailsImg.push(loadImage('imgs/zen/fish_tail_2.png'));
+    fishTailsImg.push(loadImage('imgs/zen/fish_tail_3.png'));
+    fishTailsImg.push(loadImage('imgs/zen/fish_tail_4.png'));
 }
 
-var canvas, bg, halo, debug;
 function setup() {
     createCanvas(window.innerWidth, window.innerHeight);
     frameRate(30);
 
+    createHalo();
     createGradient();
+    createBasicShapes();
+    createFish();
 
+    physics = new VerletPhysics2D();
+    physics.addBehavior(new GravityBehavior(new Vec2D(0, -0.1)));
+
+    flowfield = new Flowfield(20);
+
+    strokeWeight(2);
+}
+
+function createHalo() {
     halo = createGraphics(100, 100);
     halo.scale(1 / pixelDensity());
     for(var i = 0; i < 40; i++) {
@@ -46,64 +71,77 @@ function setup() {
         halo.noStroke();
         halo.ellipse(halo.width / 2, halo.height / 2, 100 - i * 2.5, 100 - i * 2.5);
     }
-
-    physics = new VerletPhysics2D();
-    physics.addBehavior(new GravityBehavior(new Vec2D(0, -0.1)));
-
-    flowfield = new Flowfield(20);
-
-    // prepareDatas();
-
-    createBasicShapes();
-    createTerrain();
-    createFish();
-    // addFishes();
 }
 
 function createGradient() {
-    bg = createGraphics(width, height);
+    bg = createGraphics(1, height);
     bg.scale(1 / pixelDensity());
-    var color1   = color(0, 0, 0),
-        color2   = color(40, 15, 120),
-        color3   = color(currentColor.r + 10, currentColor.g + 10, currentColor.b + 10),
-        color4   = color(currentColor.r, currentColor.g, currentColor.b),
-        bgHeight = bg.height,
-        bgWidth  = bg.width,
-        horizon  = Math.floor(bgHeight / 2),
-        bottom   = bgHeight - bgHeight / 3,
+    var color1, color2, color3, color4,
+        horizon  = Math.floor(bg.height / 2),
+        bottom   = Math.floor(bg.height - bg.height / 2.5),
         amount;
+
+    if(!zen) {
+        color1 = color(0, 0, 0);
+        color2 = color(60, 30, 135);
+        color3 = color(currentColor.r + 10, currentColor.g + 10, currentColor.b + 10);
+        color4 = color(currentColor.r, currentColor.g, currentColor.b);
+    } else {
+        color1 = color(35, 0, 125);
+        color2 = color(40, 20, 60);
+        color3 = color(currentColor.r + 10, currentColor.g + 10, currentColor.b + 10);
+        color4 = color(currentColor.r, currentColor.g, currentColor.b);
+    }
+
+    bg.noStroke();
     for(var i = 0; i < horizon; i++) {
         amount = map(i, 0, horizon, 0, 1);
-        bg.stroke(lerpColor(color1, color2, amount));
-        bg.line(0, i, bgWidth, i);
+        bg.fill(lerpColor(color1, color2, amount));
+        bg.rect(0, i, bg.width, 1);
     }
-    for(var i = horizon; i < bottom; i++) {
-        amount = map(i, horizon, bottom, 0, 1);
-        bg.stroke(lerpColor(color2, color3, amount));
-        bg.line(0, i, bgWidth, i);
-    }
-    for(var i = bottom; i < bgHeight; i++) {
-        amount = constrain(map(i, bottom, bgHeight - bgHeight / 12, 0, 1), 0, 1);
-        bg.stroke(lerpColor(color3, color4, amount));
-        bg.line(0, i, bgWidth, i);
-    }
-}
 
-function prepareDatas() {
-    console.log("Space " + json.space.name);
-    console.log("created by: " + json.space.creator);
-    console.log("-");
-    console.log("Items: " + json.items.length);
-    for(var i = 0; i < json.items.length; i++) {
-        console.log(json.items[i]._type);
-        console.log(json.items[i]);
+    if(!zen) {
+        for(var i = horizon; i < bg.height; i++) {
+            amount = constrain(map(i, horizon, bg.height - bg.height / 12, 0, 1), 0, 1);
+            bg.fill(lerpColor(color2, color4, amount));
+            bg.rect(0, i, bg.width, 1);
+        }
+    } else {
+        for(var i = horizon; i < bottom; i++) {
+            amount = map(i, horizon, bottom, 0, 1);
+            bg.fill(lerpColor(color2, color3, amount));
+            bg.rect(0, i, bg.width, 1);
+        }
+
+        for(var i = bottom; i < bg.height; i++) {
+            amount = constrain(map(i, bottom, bg.height - bg.height / 12, 0, 1), 0, 1);
+            bg.fill(lerpColor(color3, color4, amount));
+            bg.rect(0, i, bg.width, 1);
+        }
     }
-    console.log("-");
-    console.log("Members: " + json.members.length);
-    for(var i = 0; i < json.members.length; i++) {
-        if(i < 10) console.log(json.members[i]);
-        else console.log(json.members[i].name);
-        console.log(json.members[i].metrics.contributor);
+
+    leftGradient = createGraphics(100, height);
+    leftGradient.scale(1 / pixelDensity());
+    for(var i = 0; i < leftGradient.width; i++) {
+        amount = map(i, 0, leftGradient.width, 255, 0);
+        leftGradient.tint(255, amount);
+        leftGradient.image(bg, 0, 0, bg.width, bg.height, i, 0, 1, leftGradient.height);
+    }
+
+    rightGradient = createGraphics(100, height);
+    rightGradient.scale(1 / pixelDensity());
+    for(var i = 0; i < rightGradient.width; i++) {
+        amount = map(i, 0, rightGradient.width, 0, 255);
+        rightGradient.tint(255, amount);
+        rightGradient.image(bg.get(), 0, 0, bg.width, bg.height, i, 0, 1, rightGradient.height);
+    }
+
+    bottomGradient = createGraphics(width, height / 4);
+    bottomGradient.scale(1 / pixelDensity());
+    for(var i = 0; i < bottomGradient.height; i++) {
+        amount = constrain(map(i, 0, bottomGradient.height - height/12, 0, 1), 0, 1);
+        bottomGradient.stroke(lerpColor(color(currentColor.r, currentColor.g, currentColor.b, 0), color(currentColor.r, currentColor.g, currentColor.b, 255), amount));
+        bottomGradient.line(0, i, bottomGradient.width, i);
     }
 }
 
@@ -114,7 +152,11 @@ function createBasicShapes() {
         s.scale(1 / pixelDensity());
         s.translate(s.width / 2, s.height / 2);
         s.noStroke();
-        s.fill(9, 182, 125);
+        if(!zen) {
+            s.fill(40, 180, 55);
+        } else {
+            s.fill(32, 145, 85);
+        }
         if(i == 0) {
             s.beginShape();
             for(var j = 0; j < S_TRIANGLE; j++) {
@@ -148,25 +190,9 @@ function createBasicShapes() {
     }
 }
 
-function createTerrain() {
-    if(rocks.length > 0) {
-        for(var i = 0, l = rocks.length; i < l; i++) {
-            rocks[i].delete();
-        }
-    }
-
-    rocks = [];
-    // for(var i = 0; i < 8; i++) {
-    //     var rand = Math.floor(constrain(random(4), 0, 3));
-    //     addRock(random(0, width), height - height/12, random(50, 400), random(-PI/10, PI/10), rand, shapes[rand]);
-    // }
-
-    // addRock(width/2, height-height/12, 300, 0, 2);
-}
-
 function createFish() {
     for(var i = 0; i < fishBodiesImg.length; i++) {
-        var fishBody = createGraphics(50, 32);
+        var fishBody = createGraphics(50, 50);
         fishBody.scale(1 / pixelDensity());
         fishBody.translate(fishBody.width/2, fishBody.height/2);
         fishBody.rotate(PI);
@@ -176,7 +202,7 @@ function createFish() {
         fishBodies.push(fishBody);
     }
     for(var i = 0; i < fishTailsImg.length; i++) {
-        var fishTail = createGraphics(70, 48);
+        var fishTail = createGraphics(45, 48);
         fishTail.scale(1 / pixelDensity());
         fishTail.translate(fishTail.width/2, fishTail.height/2);
         fishTail.rotate(PI);
@@ -187,23 +213,11 @@ function createFish() {
     }
 }
 
-function addFishes() {
-    var scale = constrain(map(50, 1, 300, .8, .5), .5, .8);
-
-    for(var i = 0; i < 50; i++) {
-        fishes.push(new Fish(new Vec2D(width/2, -50), 6.0, 0.1, fishBodies[0], undefined, scale));
-    }
-}
-
 function update() {
-    R += (currentColor.r - R) * .1;
-    G += (currentColor.g - G) * .1;
-    B += (currentColor.b - B) * .1;
-
     physics.update();
 
     if(random() < .05) {
-        bubbles.push(new Bubble(new Vec2D(random(width/6, width - width/6), random(height - height/3, height - height/12)), physics));
+        bubbles.push(new Bubble(new Vec2D(random(width/6, width - width/6), random(height - height/3, height - height/12))));
     }
 
     for(var i = bubbles.length - 1; i >= 0; i--) {
@@ -218,6 +232,10 @@ function update() {
         rocks[i].update();
     }
 
+    for(var i = 0, l = gems.length; i < l; i++) {
+        gems[i].update();
+    }
+
     // flowfield.update();
 
     var t = touchIsDown;
@@ -229,12 +247,11 @@ function update() {
     step++;
 }
 
-var intro = false, introBeginning;
 function draw() {
     update();
 
-    image(bg, 0, 0);
     // background(0);
+    image(bg, 0, 0, width, height);
 
     if(intro && step - introBeginning <= 120) {
         var offset = map(step - introBeginning, 0, 120, 3, 0);
@@ -247,17 +264,37 @@ function draw() {
     }
 
     for(var i = 0, l = rocks.length; i < l; i++) {
-        rocks[i].display(i, rocks.length);
+        var s = map(i, 0, rocks.length - 1, .6, 1);
+
+        rocks[i].display(s);
         for(var j = 0, ll = displayTree[i].length; j < ll; j++) {
-            displayTree[i][j].display(i, rocks.length);
+            displayTree[i][j].display(s);
         }
+
+        push();
+        translate(map(mouseX, 0, width, width/2 - width/4, width/2 + width/4), map(mouseY, 0, height, height/4, 3 * height/4));
+        scale(s);
+        translate(-map(mouseX, 0, width, width/2 - width/4, width/2 + width/4), -map(mouseY, 0, height, height/4, 3 * height/4));
+
+        if(debug) {
+            stroke(255);
+            rect(0, 0, width, height);
+        }
+
+        // image(bottomGradient, -(1 - s) * width * 1.5, height - bottomGradient.height, width + (1 - s) * width * 3, bottomGradient.height);
+        // fill(color(currentColor.r, currentColor.g, currentColor.b));
+        // noStroke();
+        // rect(-(1 - s) * width * 1.5, height - 1, width + (1 - s) * width * 3, -(1 - s) * height * 1.5);
+        pop();
+    }
+
+    for(var i = 0, l = gems.length; i < l; i++) {
+        gems[i].display();
     }
 
     // for(var i = 0; i < fishes.length; i++) {
     //     fishes[i].display();
     // }
-
-    // if(debug) flowfield.display();
 
     if(touchIsDown) {
         image(halo, touchX - halo.width/2, touchY - halo.height/2);
@@ -268,37 +305,8 @@ function draw() {
     text(Math.floor(frameRate()) + "fps", 5, 40);
 }
 
-function addRock(x, y, h, a, kind) {
-    var r;
-    switch(kind) {
-        case 0:
-            r = new Rock(new Vec2D(x, y), h, a, S_TRIANGLE, shapes[kind]);
-            break;
-
-        case 1:
-            r = new Rock(new Vec2D(x, y), h, a, S_SQUARE, shapes[kind]);
-            break;
-
-        case 2:
-            r = new Rock(new Vec2D(x, y), h, a, S_HEXAGON, shapes[kind]);
-            break;
-
-        case 3:
-            r = new Rock(new Vec2D(x, y), h, a, S_CIRCLE, shapes[kind]);
-            break;
-
-        default:
-            break;
-    }
-    rocks.push(r);
-}
-
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-}
-
-function mouseDragged() {
-    // bubbles.push(new Bubble(new Vec2D(mouseX, mouseY), physics));
 }
 
 function keyPressed() {

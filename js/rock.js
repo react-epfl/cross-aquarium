@@ -16,65 +16,77 @@ Rock.prototype = {
         }
     },
 
-    display: function(index, last) {
+    display: function(s) {
         push();
-        translate(width/2, height/2);
-        scale(map(index, 0, last, .6, 1));
-        translate(-width/2, -height/2);
+        translate(map(mouseX, 0, width, width/3, 2 * width/3), map(mouseY, 0, height, height/3, 2 * height/3));
+        scale(s);
+        translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
         translate(this.position.x, this.position.y);
-        rotate(this.angle);
-        fill(R, G, B);
+        if(!zen) {
+            fill(30, 255, 120);
+        } else {
+            fill(38, 28, 48);
+        }
         noStroke();
         beginShape();
         if(this.numPoint == S_TRIANGLE) {
             for(var i = 0; i < this.numPoint; i++) {
-                vertex(Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 60,
-                       Math.sin(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 24);
+                vertex(Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 120,
+                       Math.sin(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * map(mouseY, 0, height, 24, 2));
             }
             for(var i = this.numPoint - 1; i >= 0; i--) {
                 if(i != 1) {
-                    vertex(Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 60,
-                           Math.sin(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 24 - this.depth);
+                    var x = Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 120,
+                        y = Math.sin(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * map(mouseY, 0, height, 24, 2) - this.depth
+                    vertex(Math.cos(this.angle) * x - Math.sin(this.angle) * y,
+                           Math.sin(this.angle) * x + Math.cos(this.angle) * y);
                 }
             }
         } else {
             for(var i = 0; i < this.numPoint / 2 + 1; i++) {
-                vertex(Math.cos(i * Math.PI * 2 / this.numPoint) * 60,
-                       Math.sin(i * Math.PI * 2 / this.numPoint) * 24);
+                vertex(Math.cos(i * Math.PI * 2 / this.numPoint) * 120,
+                       Math.sin(i * Math.PI * 2 / this.numPoint) * map(mouseY, 0, height, 24, 2));
             }
             for(var i = this.numPoint / 2; i < this.numPoint + 1; i++) {
-                vertex(Math.cos(i * Math.PI * 2 / this.numPoint) * 60,
-                       Math.sin(i * Math.PI * 2 / this.numPoint) * 24 - this.depth);
+                var x = Math.cos(i * Math.PI * 2 / this.numPoint) * 120,
+                    y = Math.sin(i * Math.PI * 2 / this.numPoint) * map(mouseY, 0, height, 24, 2) - this.depth;
+                vertex(Math.cos(this.angle) * x - Math.sin(this.angle) * y,
+                       Math.sin(this.angle) * x + Math.cos(this.angle) * y);
             }
         }
         endShape(CLOSE);
 
-        translate(0, -this.depth);
-        fill(R + 15, G + 10, B + 20);
+        translate(Math.cos(this.angle - PI/2) * this.depth, Math.sin(this.angle - PI/2) * this.depth);
+        rotate(this.angle);
+        if(!zen) {
+            fill(45, 235, 115);
+        } else {
+            fill(16, 84, 60);
+        }
         beginShape();
         if (this.numPoint == S_TRIANGLE) {
             for(var i = 0; i < this.numPoint; i++) {
-                vertex(Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 60,
-                       Math.sin(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 24);
+                vertex(Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 120,
+                       Math.sin(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * map(mouseY, 0, height, 24, 2));
             }
         } else {
             for(var i = 0; i < this.numPoint; i++) {
-                vertex(Math.cos(i * Math.PI * 2 / this.numPoint) * 60,
-                       Math.sin(i * Math.PI * 2 / this.numPoint) * 24);
+                vertex(Math.cos(i * Math.PI * 2 / this.numPoint) * 120,
+                       Math.sin(i * Math.PI * 2 / this.numPoint) * map(mouseY, 0, height, 24, 2));
             }
         }
         endShape(CLOSE);
-
         pop();
 
         push();
         for(var i = 0, l = this.algaes.length; i < l; i++) {
-            translate(width/2, height/2);
-            scale(map(index, 0, last, .6, 1));
-            translate(-width/2, -height/2);
+            translate(map(mouseX, 0, width, width/3, 2 * width/3), map(mouseY, 0, height, height/3, 2 * height/3));
+            scale(s);
+            translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
             this.algaes[i].display();
         }
         pop();
+
     },
 
     addAlgae: function() {

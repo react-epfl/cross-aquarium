@@ -1,4 +1,4 @@
-var Bubble = function(position, physics) {
+var Bubble = function(position) {
     this.particle = new VerletParticle2D(position.x, position.y);
 
     physics.addParticle(this.particle);

@@ -5,7 +5,7 @@ var Algae = function(position, distBetweenPoints, shape) {
     this.branches          = [];
     this.scale             = 0;
 
-    this.addLeaf();
+    // this.addLeaf();
 }
 
 Algae.prototype = {
@@ -17,7 +17,6 @@ Algae.prototype = {
     },
 
     display: function() {
-        strokeWeight(2);
         push();
         translate(this.position.x, this.position.y);
         scale(this.scale);
