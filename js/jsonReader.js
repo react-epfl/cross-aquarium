@@ -82,12 +82,12 @@ var addItem = function(item) {
         rocks.push(new Rock(new Vec2D(random(0, width), height - height/12),
                             constrain(map(age, minAge, maxAge, height/6, height/2), height/6, height/2),
                             constrain(map(last, minLast, maxLast, 0, PI/10), 0, PI/10) * (random() < .5 ? -1 : 1),
-                            shape, shapes[type]));
+                            shape, shapes[type], item._id));
         rocks[rocks.length - 1].addAlgae();
 
         if(typeof item.comments !== 'undefined') {
             for(var i = 0, l = item.comments.length; i < l; i++) {
-                addComment(item.comments[i], i);
+                addComment(item.comments[i], item._id);
             }
         }
 
@@ -95,17 +95,22 @@ var addItem = function(item) {
     }
 }
 
-var addComment = function(comment, index) {
-    if(typeof index !== 'undefined') {
-        rocks[rocks.length - 1].addLeaf();
-        if(typeof comment.replies !== 'undefined') {
-            for(var i = 0, l = comment.replies.length; i < l; i++) {
-                rocks[rocks.length - 1].addLeaf(index);
+var addComment = function(comment, itemId) {
+    for(var i = 0; i < rocks.length; i++) {
+        if(typeof itemId !== 'undefined' && rocks[i].id == itemId) {
+            rocks[i].addBranch(comment._id);
+            if(typeof comment.replies !== 'undefined') {
+                for(var j = 0, l = comment.replies.length; j < l; j++) {
+                    rocks[i].addBranch(comment.replies[j]._id, comment._id);
+                }
             }
+            return;
+        } else if(rocks[i].id == comment.itemId) {
+            rocks[i].addBranch(comment._id, comment.parentCommentId);
+            return;
         }
-    } else {
-        /* TODO: handle when comment is sent alone */
     }
+    console.log("The item with the id: " + itemId + " seems to not be here");
 }
 
 var addMember = function(member) {

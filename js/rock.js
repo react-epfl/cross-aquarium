@@ -1,4 +1,4 @@
-var Rock = function(position, depth, angle, numPoint, shape) {
+var Rock = function(position, depth, angle, numPoint, shape, id) {
     this.position = position;
     this.depth    = 0;
     this.newDepth = depth;
@@ -6,11 +6,32 @@ var Rock = function(position, depth, angle, numPoint, shape) {
     this.numPoint = numPoint;
     this.shape    = shape;
     this.algaes   = [];
+    this.id       = id;
+
+    this.mainCol = {r: 255, g: 255, b: 255};
+    this.topCol  = {r: 255, g: 255, b: 255};
+
+    if(!zen) {
+        this.destMainCol = {r: 30, g: 255, b: 120};
+        this.destTopCol  = {r: 45, g: 235, b: 115};
+    } else {
+        this.destMainCol = {r: 38, g: 28, b: 48};
+        this.destTopCol  = {r: 16, g: 84, b: 60};
+    }
 }
 
 Rock.prototype = {
     update: function() {
         this.depth += (this.newDepth - this.depth) * .05;
+
+        this.mainCol.r += (this.destMainCol.r - this.mainCol.r) * .025;
+        this.mainCol.g += (this.destMainCol.g - this.mainCol.g) * .025;
+        this.mainCol.b += (this.destMainCol.b - this.mainCol.b) * .025;
+
+        this.topCol.r  += (this.destTopCol.r - this.topCol.r) * .025;
+        this.topCol.g  += (this.destTopCol.g - this.topCol.g) * .025;
+        this.topCol.b  += (this.destTopCol.b - this.topCol.b) * .025;
+
         for(var i = 0, l = this.algaes.length; i < l; i++) {
             this.algaes[i].update(this.depth >= this.newDepth - 1);
         }
@@ -22,11 +43,7 @@ Rock.prototype = {
         scale(s);
         translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
         translate(this.position.x, this.position.y);
-        if(!zen) {
-            fill(30, 255, 120);
-        } else {
-            fill(38, 28, 48);
-        }
+        fill(this.mainCol.r, this.mainCol.g, this.mainCol.b);
         noStroke();
         beginShape();
         if(this.numPoint == S_TRIANGLE) {
@@ -58,11 +75,7 @@ Rock.prototype = {
 
         translate(Math.cos(this.angle - PI/2) * this.depth, Math.sin(this.angle - PI/2) * this.depth);
         rotate(this.angle);
-        if(!zen) {
-            fill(45, 235, 115);
-        } else {
-            fill(16, 84, 60);
-        }
+        fill(this.topCol.r, this.topCol.g, this.topCol.b);
         beginShape();
         if (this.numPoint == S_TRIANGLE) {
             for(var i = 0; i < this.numPoint; i++) {
@@ -92,11 +105,11 @@ Rock.prototype = {
     addAlgae: function() {
         var x = this.position.x + Math.cos(this.angle - Math.PI / 2) * this.newDepth,
             y = this.position.y + Math.sin(this.angle - Math.PI / 2) * this.newDepth;
-        this.algaes.push(new Algae(new Vec2D(x, y), 30, this.shape));
+        this.algaes.push(new Algae(new Vec2D(x, y), 30, this.numPoint));
     },
 
-    addLeaf: function(index) {
-        this.algaes[0].addLeaf(index);
+    addBranch: function(id, fromId) {
+        this.algaes[0].addBranch(id, fromId);
     },
 
     delete: function() {

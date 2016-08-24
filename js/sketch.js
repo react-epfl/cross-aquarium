@@ -33,8 +33,6 @@ var physics,
     intro         = false,
     introBeginning;
 
-var algaeKind = 1;
-
 function preload() {
     fishBodiesImg.push(loadImage('imgs/zen/fish_body_1.png'));
     fishBodiesImg.push(loadImage('imgs/zen/fish_body_2.png'));
@@ -125,7 +123,7 @@ function createGradient() {
     for(var i = 0; i < leftGradient.width; i++) {
         amount = map(i, 0, leftGradient.width, 255, 0);
         leftGradient.tint(255, amount);
-        leftGradient.image(bg, 0, 0, bg.width, bg.height, i, 0, 1, leftGradient.height);
+        leftGradient.image(bg.get(), 0, 0, bg.width, bg.height, i, 0, 1, leftGradient.height);
     }
 
     rightGradient = createGraphics(100, height);
@@ -148,7 +146,12 @@ function createGradient() {
 var shapes = [];
 function createBasicShapes() {
     for(var i = 0; i < 4; i++) {
-        var s = createGraphics(20, 10);
+        var s;
+        if(!zen) {
+            s = createGraphics(50, 20);
+        } else {
+            s = createGraphics(20, 10);
+        }
         s.scale(1 / pixelDensity());
         s.translate(s.width / 2, s.height / 2);
         s.noStroke();
@@ -239,10 +242,17 @@ function update() {
     // flowfield.update();
 
     var t = touchIsDown;
-    for(var i = 0, l = fishes.length; i < l; i++) {
-        fishes[i].step(fishes, flowfield);
-        if(t) fishes[i].seek(new Vec2D(touchX, touchY));
+    for(var i = 0, l = displayTree.length; i < l; i++) {
+        for(var j = 0, ll = displayTree[i].length; j < ll; j++) {
+            displayTree[i][j].step(displayTree[i], flowfield);
+            if(t) displayTree[i][j].seek(new Vec2D(touchX, touchY));
+        }
     }
+
+    // for(var i = 0, l = fishes.length; i < l; i++) {
+    //     fishes[i].step(fishes, flowfield);
+    //     if(t) fishes[i].seek(new Vec2D(touchX, touchY));
+    // }
 
     step++;
 }

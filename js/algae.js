@@ -10,9 +10,13 @@ var Algae = function(position, distBetweenPoints, shape) {
 
 Algae.prototype = {
     update: function(grow) {
-        if(grow) this.scale += (1 - this.scale) * .025;
-        for(var i = 0, l = this.branches.length; i < l; i++) {
-            this.branches[i].update();
+        if(grow) {
+            this.scale += (1 - this.scale) * .025;
+            for(var i = 0, l = this.branches.length; i < l; i++) {
+                this.branches[i].update();
+                if(i == l - 1)
+                    this.branches[i].getLastLeaf().addForce(new Vec2D(random(-.1, .1), 0));
+            }
         }
     },
 
@@ -26,33 +30,32 @@ Algae.prototype = {
         pop();
     },
 
-    addLeaf: function(index) {
+    addBranch: function(id, fromId) {
         if(this.branches.length == 0) {
-            this.branches.push(new Branch(this.distBetweenPoints, new Vec2D(0, 0), 0));
-            this.branches[0].addLeaf(true);
-        } else if(typeof index === 'undefined') {
-            if(algaeKind == 0) {
-                var position = new Vec2D(random(-25, 25), random(-10, 10));
-                for(var i = 0, l = this.branches.length; i < l; i++) {
-                    if(position.y < this.branches[i].position.y) {
-                        this.branches.splice(i, 0, new Branch(this.distBetweenPoints, position, this.branches.length));
-                        this.branches[i].addLeaf(true);
-                        return;
-                    }
-                }
-                this.branches.push(new Branch(this.distBetweenPoints, position, this.branches.length));
-                this.branches[this.branches.length - 1].addLeaf(true);
-            } else {
-                this.branches[0].addLeaf(false, this.branches[0].getLastLeaf());
-            }
+            this.branches.push(new Branch(this.distBetweenPoints, id));
+            this.branches[0].createLeaf(true);
+        } else if(typeof fromId === 'undefined') {
+            // if(algaeKind == 0) {
+            //     var position = new Vec2D(random(-25, 25), random(-10, 10));
+            //     for(var i = 0, l = this.branches.length; i < l; i++) {
+            //         if(position.y < this.branches[i].position.y) {
+            //             this.branches.splice(i, 0, new Branch(this.distBetweenPoints, position, this.branches.length));
+            //             this.branches[i].addLeaf(true);
+            //             return;
+            //         }
+            //     }
+            //     this.branches.push(new Branch(this.distBetweenPoints, position, this.branches.length));
+            //     this.branches[this.branches.length - 1].addLeaf(true);
+            // }
+            this.branches.push(new Branch(this.distBetweenPoints, id, this.branches[this.branches.length - 1].getLastLeaf()));
         } else {
             for(var i = 0, l = this.branches.length; i < l; i++) {
-                if(this.branches[i].id == index) {
-                    this.branches[i].addLeaf(false, this.branches[i].getLastLeaf());
+                if(this.branches[i].id == fromId) {
+                    this.branches.push(new Branch(this.distBetweenPoints, id, this.branches[i].getLastLeaf()));
                     return;
                 }
             }
-            this.branches.push(new Branch(this.distBetweenPoints, new Vec2D(0, 0), index, this.branches[0].leaves[index]));
+            this.branches.push(new Branch(this.distBetweenPoints, id, this.branches[this.branches.length - 1].getLastLeaf()));
         }
     },
 

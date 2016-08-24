@@ -2,7 +2,7 @@ var Gem = function(position) {
     this.position = position;
     this.rand     = Math.random() * Math.PI * 2;
     this.depth    = 0;
-    this.newDepth = 100;
+    this.newDepth = 30;
 
     var min  = -1,
         max  = -1;
@@ -36,7 +36,8 @@ Gem.prototype = {
         push();
         translate(this.position.x, this.position.y - map(mouseY, 0, height, 0, height / 24));
         if(!zen) {
-            fill(148, 10, 194);
+            // fill(148, 10, 194);
+            fill(230);
         } else {
             fill(6, 60, 114);
         }
@@ -52,7 +53,8 @@ Gem.prototype = {
         }
         endShape(CLOSE);
         if(!zen) {
-            fill(198, 24, 255);
+            // fill(198, 24, 255);
+            fill(255);
         } else {
             fill(20, 120, 210);
         }

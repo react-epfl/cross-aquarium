@@ -1,33 +1,35 @@
-var Branch = function(distBetweenPoints, position, id, leaf) {
+var Branch = function(distBetweenPoints, id, leaf) {
     this.distBetweenPoints = distBetweenPoints;
-    this.position          = position;
     this.id                = id;
     this.leaves            = [];
     this.springs           = [];
 
-    this.randomB           = random(255);
+    this.mainCol = {r: 255, g: 255, b: 255};
+
+    if(!zen) {
+        this.destMainCol = {r: 40, g: 180, b: 55};
+    } else {
+        this.destMainCol = {r: 32, g: 145, b: 85};
+    }
 
     if(typeof leaf !== 'undefined') {
-        this.addLeaf(false, leaf);
+        this.createLeaf(false, leaf);
     }
 }
 
 Branch.prototype = {
     update: function() {
-        this.getLastLeaf().addForce(new Vec2D(random(-.1, .1), 0));
+        this.mainCol.r += (this.destMainCol.r - this.mainCol.r) * .025;
+        this.mainCol.g += (this.destMainCol.g - this.mainCol.g) * .025;
+        this.mainCol.b += (this.destMainCol.b - this.mainCol.b) * .025;
     },
 
     display: function(shape) {
         push();
-        translate(this.position.x, this.position.y);
-        noFill();
-        if(!zen) {
-            stroke(40, 180, 55);
-        } else {
-            stroke(32, 145, 85);
-        }
         var index = 0;
         for(var i = 0, l = this.springs.length; i < l; i++) {
+            noFill();
+            stroke(this.mainCol.r, this.mainCol.g, this.mainCol.b);
             line(this.springs[i].a.x, this.springs[i].a.y,
                  this.springs[i].b.x, this.springs[i].b.y);
             if(i % 3 == 2) {
@@ -35,7 +37,22 @@ Branch.prototype = {
                 var dir = this.springs[i].b.sub(this.springs[i].a);
                 translate(this.leaves[index].x, this.leaves[index].y);
                 rotate(dir.heading() - PI/2);
-                image(shape, -shape.width/2, -shape.height/2);
+                fill(this.mainCol.r, this.mainCol.g, this.mainCol.b);
+                noStroke();
+                beginShape();
+                if (shape == S_TRIANGLE) {
+                    for(var i = 0; i < shape; i++) {
+                        vertex(Math.cos(i * Math.PI * 2 / shape - Math.PI / 6) * 25,
+                               Math.sin(i * Math.PI * 2 / shape - Math.PI / 6) * map(mouseY, 0, height, 10, 2));
+                    }
+                } else {
+                    for(var i = 0; i < shape; i++) {
+                        vertex(Math.cos(i * Math.PI * 2 / shape) * 25,
+                               Math.sin(i * Math.PI * 2 / shape) * map(mouseY, 0, height, 10, 2));
+                    }
+                }
+                endShape(CLOSE);
+                // image(shape, -shape.width/2, -shape.height/2);
                 pop();
                 index++;
             }
@@ -43,7 +60,7 @@ Branch.prototype = {
         pop();
     },
 
-    addLeaf: function(locked, fromLeaf) {
+    createLeaf: function(locked, fromLeaf) {
         for(var i = typeof fromLeaf === 'undefined' ? 0 : 1; i <= 3; i++) {
             var p = new VerletParticle2D(0, -i * (this.distBetweenPoints / 3));
 

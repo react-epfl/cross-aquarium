@@ -29,10 +29,10 @@ Fish.prototype = {
             coh = this.cohesion(fishes),
             fol = this.follow(flowfield);
 
-        sep.scaleSelf(1.5);
-        ali.scaleSelf(1.0);
-        coh.scaleSelf(1.0);
-        fol.scaleSelf(0.5);
+        sep.scaleSelf(2.0);
+        ali.scaleSelf((Math.cos(step * .001) + 1 / 2));
+        coh.scaleSelf((Math.cos(step * .001) + 1 / 2));
+        fol.scaleSelf(0.25);
 
         this.acceleration.addSelf(sep);
         this.acceleration.addSelf(ali);
@@ -83,8 +83,23 @@ Fish.prototype = {
     },
 
     checkBorders: function() {
-        if(this.position.x < -50) this.position.x = width + 50;
-        else if(this.position.x > width + 50) this.position.x = -50;
+        // if(this.position.x < -50) this.position.x = width + 50;
+        // else if(this.position.x > width + 50) this.position.x = -50;
+        if(this.position.x < 50) {
+            var steer = new Vec2D(this.maxSpeed, this.velocity.x);
+            steer.normalize();
+            steer.scaleSelf(this.maxSpeed);
+            steer.subSelf(this.velocity);
+            steer.limit(this.maxForce);
+            this.acceleration.addSelf(steer.scaleSelf(2.0));
+        } else if(this.position.x > width - 50) {
+            var steer = new Vec2D(-this.maxSpeed, this.velocity.x);
+            steer.normalize();
+            steer.scaleSelf(this.maxSpeed);
+            steer.subSelf(this.velocity);
+            steer.limit(this.maxForce);
+            this.acceleration.addSelf(steer.scaleSelf(2.0));
+        }
         if(this.position.y < 10) {
             var steer = new Vec2D(this.velocity.x, this.maxSpeed);
             steer.normalize();
@@ -93,9 +108,6 @@ Fish.prototype = {
             steer.limit(this.maxForce);
             this.acceleration.addSelf(steer.scaleSelf(2.0));
         } else if(this.position.y > height - height/6) {
-            // var repulsiveForce = map(this.position.y, height - 250, height - 50, 0, this.maxSpeed / 10);
-            // repulsiveForce = constrain(repulsiveForce, 0, this.maxSpeed);
-            // var steer = new Vec2D(this.velocity.x, -repulsiveForce);
             var steer = new Vec2D(this.velocity.x, -this.maxSpeed);
             steer.normalize();
             steer.scaleSelf(this.maxSpeed);
