@@ -4,8 +4,9 @@ var json,
     minLast = -1,
     maxLast = -1;
 
-var readJSON = function(data) {
-    json = JSON.parse(data);
+var readJSON = function(json) {
+    var spaceName = document.getElementById('spaceName');
+    if(spaceName !== null) spaceName.innerHTML = json.space.name;
 
     for(var i = 0, l = json.items.length; i < l; i++) {
         var age = new Date(json.items[i].created);

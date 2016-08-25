@@ -56,7 +56,7 @@ function setup() {
     physics = new VerletPhysics2D();
     physics.addBehavior(new GravityBehavior(new Vec2D(0, -0.1)));
 
-    flowfield = new Flowfield(20);
+    flowfield = new Flowfield(50);
 
     strokeWeight(2);
 }
@@ -239,7 +239,7 @@ function update() {
         gems[i].update();
     }
 
-    // flowfield.update();
+    flowfield.update();
 
     var t = touchIsDown;
     for(var i = 0, l = displayTree.length; i < l; i++) {
@@ -269,6 +269,8 @@ function draw() {
         if(step - introBeginning == 120) intro = false;
     }
 
+    if(debug) flowfield.display();
+
     for(var i = 0, l = bubbles.length; i < l; i++) {
         bubbles[i].display();
     }
@@ -291,10 +293,12 @@ function draw() {
             rect(0, 0, width, height);
         }
 
-        // image(bottomGradient, -(1 - s) * width * 1.5, height - bottomGradient.height, width + (1 - s) * width * 3, bottomGradient.height);
-        // fill(color(currentColor.r, currentColor.g, currentColor.b));
-        // noStroke();
-        // rect(-(1 - s) * width * 1.5, height - 1, width + (1 - s) * width * 3, -(1 - s) * height * 1.5);
+        if(zen) {
+            image(bottomGradient, -(1 - s) * width * 1.5, height - bottomGradient.height, width + (1 - s) * width * 3, bottomGradient.height);
+            fill(color(currentColor.r, currentColor.g, currentColor.b));
+            noStroke();
+            rect(-(1 - s) * width * 1.5, height - 1, width + (1 - s) * width * 3, -(1 - s) * height * 1.5);
+        }
         pop();
     }
 

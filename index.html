@@ -34,6 +34,63 @@
                 top: 6px;
                 left: 3px;
             }
+
+            #panel {
+                width: 500px;
+                height: 100%;
+                padding: 1em 1.5em;
+                position: fixed;
+                top: 0;
+                right: 0;
+                background-color: #5050d2;
+                transition: transform .5s ease-in-out;
+                transform: translateX(100%);
+            }
+
+                #panel.active {
+                    transform: translateX(0);
+                }
+
+                #spaceName {
+                    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                    font-size: 2em;
+                    color: white;
+                }
+
+            #openPanel {
+                position: fixed;
+                top: 1em;
+                right: 1em;
+                width: 40px;
+                height: 40px;
+                border: 2px solid white;
+                border-radius: 40px;
+                cursor: pointer;
+            }
+
+                #openPanel:before,
+                #openPanel:after {
+                    content: "";
+                    display: block;
+                    width: 2px;
+                    height: 15px;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    background-color: white;
+                    transition: transform .5s ease-in-out;
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+
+                #openPanel:after {
+                    width: 15px;
+                    height: 2px;
+                }
+
+                #panel.active ~ #openPanel:before,
+                #panel.active ~ #openPanel:after {
+                    transform: translate(-50%, -50%) rotate(-45deg);
+                }
         </style>
         <title>Aquarium</title>
     </head>
@@ -42,6 +99,10 @@
             <input type="button" value="Reset" onclick="location.reload();" />
             <input id="uploadJSON" accept=".json" type="file" />
         </div>
+        <div id="panel">
+            <div id="spaceName"></div>
+        </div>
+        <div id="openPanel" onclick="document.getElementById('panel').classList.toggle('active')"></div>
         <script src="js/p5.min.js"></script>
         <script src="js/toxiclibs.min.js"></script>
         <script src="js/utils.js"></script>
@@ -60,7 +121,7 @@
                     var reader = new FileReader();
                     reader.readAsText(file, "UTF-8");
                     reader.addEventListener('load', function(e) {
-                        readJSON(e.target.result);
+                        readJSON(JSON.parse(e.target.result));
                         intro = true;
                         introBeginning = step;
                         uploadJSON.disabled = true;

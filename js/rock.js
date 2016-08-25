@@ -12,8 +12,19 @@ var Rock = function(position, depth, angle, numPoint, shape, id) {
     this.topCol  = {r: 255, g: 255, b: 255};
 
     if(!zen) {
-        this.destMainCol = {r: 30, g: 255, b: 120};
-        this.destTopCol  = {r: 45, g: 235, b: 115};
+        if(this.numPoint == S_TRIANGLE) {
+            this.destMainCol = {r: 31, g: 255, b: 135};
+            this.destTopCol  = {r: 29, g: 242, b: 129};
+        } else if(this.numPoint == S_SQUARE) {
+            this.destMainCol = {r: 39, g: 242, b: 127};
+            this.destTopCol  = {r: 37, g: 229, b: 120};
+        } else if(this.numPoint == S_HEXAGON) {
+            this.destMainCol = {r: 38, g: 242, b: 139};
+            this.destTopCol  = {r: 35, g: 225, b: 128};
+        } else if(this.numPoint == S_CIRCLE) {
+            this.destMainCol = {r: 32, g: 229, b: 118}; // 78
+            this.destTopCol  = {r: 30, g: 217, b: 111};
+        }
     } else {
         this.destMainCol = {r: 38, g: 28, b: 48};
         this.destTopCol  = {r: 16, g: 84, b: 60};
@@ -105,7 +116,7 @@ Rock.prototype = {
     addAlgae: function() {
         var x = this.position.x + Math.cos(this.angle - Math.PI / 2) * this.newDepth,
             y = this.position.y + Math.sin(this.angle - Math.PI / 2) * this.newDepth;
-        this.algaes.push(new Algae(new Vec2D(x, y), 30, this.numPoint));
+        this.algaes.push(new Algae(new Vec2D(x, y), 30, this.numPoint, this.destMainCol));
     },
 
     addBranch: function(id, fromId) {

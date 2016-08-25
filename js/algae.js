@@ -1,7 +1,8 @@
-var Algae = function(position, distBetweenPoints, shape) {
+var Algae = function(position, distBetweenPoints, shape, col) {
     this.position          = position;
     this.distBetweenPoints = distBetweenPoints;
     this.shape             = shape;
+    this.mainCol           = col;
     this.branches          = [];
     this.scale             = 0;
 
@@ -32,7 +33,7 @@ Algae.prototype = {
 
     addBranch: function(id, fromId) {
         if(this.branches.length == 0) {
-            this.branches.push(new Branch(this.distBetweenPoints, id));
+            this.branches.push(new Branch(this.distBetweenPoints, id, this.mainCol));
             this.branches[0].createLeaf(true);
         } else if(typeof fromId === 'undefined') {
             // if(algaeKind == 0) {
@@ -47,15 +48,15 @@ Algae.prototype = {
             //     this.branches.push(new Branch(this.distBetweenPoints, position, this.branches.length));
             //     this.branches[this.branches.length - 1].addLeaf(true);
             // }
-            this.branches.push(new Branch(this.distBetweenPoints, id, this.branches[this.branches.length - 1].getLastLeaf()));
+            this.branches.push(new Branch(this.distBetweenPoints, id, this.mainCol, this.branches[this.branches.length - 1].getLastLeaf()));
         } else {
             for(var i = 0, l = this.branches.length; i < l; i++) {
                 if(this.branches[i].id == fromId) {
-                    this.branches.push(new Branch(this.distBetweenPoints, id, this.branches[i].getLastLeaf()));
+                    this.branches.push(new Branch(this.distBetweenPoints, id, this.mainCol, this.branches[i].getLastLeaf()));
                     return;
                 }
             }
-            this.branches.push(new Branch(this.distBetweenPoints, id, this.branches[this.branches.length - 1].getLastLeaf()));
+            this.branches.push(new Branch(this.distBetweenPoints, id, this.mainCol, this.branches[this.branches.length - 1].getLastLeaf()));
         }
     },
 

@@ -30,9 +30,9 @@ Fish.prototype = {
             fol = this.follow(flowfield);
 
         sep.scaleSelf(2.0);
-        ali.scaleSelf((Math.cos(step * .001) + 1 / 2));
-        coh.scaleSelf((Math.cos(step * .001) + 1 / 2));
-        fol.scaleSelf(0.25);
+        ali.scaleSelf(((Math.cos(step * .01) + 1) / 2));
+        coh.scaleSelf(((Math.cos(step * .01) + 1) / 2));
+        fol.scaleSelf(0.5);
 
         this.acceleration.addSelf(sep);
         this.acceleration.addSelf(ali);

@@ -1,4 +1,4 @@
-var Branch = function(distBetweenPoints, id, leaf) {
+var Branch = function(distBetweenPoints, id, col, leaf) {
     this.distBetweenPoints = distBetweenPoints;
     this.id                = id;
     this.leaves            = [];
@@ -7,9 +7,13 @@ var Branch = function(distBetweenPoints, id, leaf) {
     this.mainCol = {r: 255, g: 255, b: 255};
 
     if(!zen) {
-        this.destMainCol = {r: 40, g: 180, b: 55};
+        this.destMainCol = {r: col.r + 10, g: col.g + 10, b: col.b + 10};
+        this.leafW       = 28;
+        this.leafH       = 12;
     } else {
         this.destMainCol = {r: 32, g: 145, b: 85};
+        this.leafW       = 15;
+        this.leafH       = 6;
     }
 
     if(typeof leaf !== 'undefined') {
@@ -42,13 +46,13 @@ Branch.prototype = {
                 beginShape();
                 if (shape == S_TRIANGLE) {
                     for(var i = 0; i < shape; i++) {
-                        vertex(Math.cos(i * Math.PI * 2 / shape - Math.PI / 6) * 25,
-                               Math.sin(i * Math.PI * 2 / shape - Math.PI / 6) * map(mouseY, 0, height, 10, 2));
+                        vertex(Math.cos(i * Math.PI * 2 / shape - Math.PI / 6) * this.leafW,
+                               Math.sin(i * Math.PI * 2 / shape - Math.PI / 6) * map(mouseY, 0, height, this.leafH, 2));
                     }
                 } else {
                     for(var i = 0; i < shape; i++) {
-                        vertex(Math.cos(i * Math.PI * 2 / shape) * 25,
-                               Math.sin(i * Math.PI * 2 / shape) * map(mouseY, 0, height, 10, 2));
+                        vertex(Math.cos(i * Math.PI * 2 / shape) * this.leafW,
+                               Math.sin(i * Math.PI * 2 / shape) * map(mouseY, 0, height, this.leafH, 2));
                     }
                 }
                 endShape(CLOSE);
