@@ -1,4 +1,4 @@
-var Rock = function(position, depth, angle, numPoint, shape, id) {
+var Rock = function(position, depth, angle, numPoint, shape, id, intro) {
     this.position = position;
     this.depth    = 0;
     this.newDepth = depth;
@@ -8,26 +8,31 @@ var Rock = function(position, depth, angle, numPoint, shape, id) {
     this.algaes   = [];
     this.id       = id;
 
-    this.mainCol = {r: 255, g: 255, b: 255};
-    this.topCol  = {r: 255, g: 255, b: 255};
-
     if(!zen) {
         if(this.numPoint == S_TRIANGLE) {
-            this.destMainCol = {r: 31, g: 255, b: 135};
-            this.destTopCol  = {r: 29, g: 242, b: 129};
+            this.destMainCol = {r: 149, g: 255, b: 135};
+            this.destTopCol  = {r: 142, g: 234, b: 129};
         } else if(this.numPoint == S_SQUARE) {
-            this.destMainCol = {r: 39, g: 242, b: 127};
-            this.destTopCol  = {r: 37, g: 229, b: 120};
+            this.destMainCol = {r: 84, g: 255, b: 176};
+            this.destTopCol  = {r: 80, g: 234, b: 157};
         } else if(this.numPoint == S_HEXAGON) {
             this.destMainCol = {r: 38, g: 242, b: 139};
-            this.destTopCol  = {r: 35, g: 225, b: 128};
+            this.destTopCol  = {r: 40, g: 219, b: 125};
         } else if(this.numPoint == S_CIRCLE) {
-            this.destMainCol = {r: 32, g: 229, b: 118}; // 78
-            this.destTopCol  = {r: 30, g: 217, b: 111};
+            this.destMainCol = {r: 78, g: 245, b: 95};
+            this.destTopCol  = {r: 80, g: 226, b: 90};
         }
     } else {
         this.destMainCol = {r: 38, g: 28, b: 48};
         this.destTopCol  = {r: 16, g: 84, b: 60};
+    }
+
+    if(intro) {
+        this.mainCol = this.destMainCol;
+        this.topCol  = this.destTopCol;
+    } else {
+        this.mainCol = {r: 255, g: 255, b: 255};
+        this.topCol  = {r: 255, g: 255, b: 255};
     }
 }
 
@@ -119,8 +124,8 @@ Rock.prototype = {
         this.algaes.push(new Algae(new Vec2D(x, y), 30, this.numPoint, this.destMainCol));
     },
 
-    addBranch: function(id, fromId) {
-        this.algaes[0].addBranch(id, fromId);
+    addBranch: function(id, intro, fromId) {
+        this.algaes[0].addBranch(id, intro, fromId);
     },
 
     delete: function() {

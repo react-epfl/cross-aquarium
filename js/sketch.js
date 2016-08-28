@@ -34,18 +34,64 @@ var physics,
     introBeginning;
 
 function preload() {
-    fishBodiesImg.push(loadImage('imgs/zen/fish_body_1.png'));
-    fishBodiesImg.push(loadImage('imgs/zen/fish_body_2.png'));
-    fishBodiesImg.push(loadImage('imgs/zen/fish_body_3.png'));
-    fishBodiesImg.push(loadImage('imgs/zen/fish_body_4.png'));
-    fishTailsImg.push(loadImage('imgs/zen/fish_tail_1.png'));
-    fishTailsImg.push(loadImage('imgs/zen/fish_tail_2.png'));
-    fishTailsImg.push(loadImage('imgs/zen/fish_tail_3.png'));
-    fishTailsImg.push(loadImage('imgs/zen/fish_tail_4.png'));
+    if(!zen) {
+        fishBodiesImg.push(loadImage('imgs/no_color/fish_body_01.png'));
+        fishBodiesImg.push(loadImage('imgs/no_color/fish_body_02.png'));
+        fishBodiesImg.push(loadImage('imgs/no_color/fish_body_03.png'));
+        fishBodiesImg.push(loadImage('imgs/no_color/fish_body_04.png'));
+        fishBodiesImg.push(loadImage('imgs/no_color/fish_body_05.png'));
+        fishBodiesImg.push(loadImage('imgs/no_color/fish_body_06.png'));
+        fishBodiesImg.push(loadImage('imgs/no_color/fish_body_07.png'));
+        fishTailsImg.push(loadImage('imgs/no_color/fish_tail_01.png'));
+        fishTailsImg.push(loadImage('imgs/no_color/fish_tail_02.png'));
+        fishTailsImg.push(loadImage('imgs/no_color/fish_tail_03.png'));
+        fishTailsImg.push(loadImage('imgs/no_color/fish_tail_04.png'));
+    } else {
+        fishBodiesImg.push(loadImage('imgs/color/fish_body_01.png'));
+        fishBodiesImg.push(loadImage('imgs/color/fish_body_02.png'));
+        fishBodiesImg.push(loadImage('imgs/color/fish_body_03.png'));
+        fishBodiesImg.push(loadImage('imgs/color/fish_body_04.png'));
+        fishBodiesImg.push(loadImage('imgs/color/fish_body_05.png'));
+        fishBodiesImg.push(loadImage('imgs/color/fish_body_06.png'));
+        fishBodiesImg.push(loadImage('imgs/color/fish_body_07.png'));
+        fishTailsImg.push([]);
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_01_01.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_01_02.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_01_03.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_01_04.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_01_05.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_01_06.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_01_07.png'));
+        fishTailsImg.push([]);
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_02_01.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_02_02.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_02_03.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_02_04.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_02_05.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_02_06.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_02_07.png'));
+        fishTailsImg.push([]);
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_03_01.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_03_02.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_03_03.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_03_04.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_03_05.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_03_06.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_03_07.png'));
+        fishTailsImg.push([]);
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_04_01.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_04_02.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_04_03.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_04_04.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_04_05.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_04_06.png'));
+        fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_04_07.png'));
+    }
 }
 
 function setup() {
-    createCanvas(window.innerWidth, window.innerHeight);
+    var canvas = createCanvas(window.innerWidth, window.innerHeight);
+    canvas.parent('#canvas');
     frameRate(30);
 
     createHalo();
@@ -195,7 +241,7 @@ function createBasicShapes() {
 
 function createFish() {
     for(var i = 0; i < fishBodiesImg.length; i++) {
-        var fishBody = createGraphics(50, 50);
+        var fishBody = createGraphics(fishBodiesImg[i].width/2, fishBodiesImg[i].height/2);
         fishBody.scale(1 / pixelDensity());
         fishBody.translate(fishBody.width/2, fishBody.height/2);
         fishBody.rotate(PI);
@@ -205,14 +251,28 @@ function createFish() {
         fishBodies.push(fishBody);
     }
     for(var i = 0; i < fishTailsImg.length; i++) {
-        var fishTail = createGraphics(45, 48);
-        fishTail.scale(1 / pixelDensity());
-        fishTail.translate(fishTail.width/2, fishTail.height/2);
-        fishTail.rotate(PI);
-        fishTail.push();
-        fishTail.image(fishTailsImg[i], -fishTail.width/2, -fishTail.height/2, fishTail.width, fishTail.height);
-        fishTail.pop();
-        fishTails.push(fishTail);
+        if(!zen) {
+            var fishTail = createGraphics(fishTailsImg[i].width/2, fishTailsImg[i].height/2);
+            fishTail.scale(1 / pixelDensity());
+            fishTail.translate(fishTail.width/2, fishTail.height/2);
+            fishTail.rotate(PI);
+            fishTail.push();
+            fishTail.image(fishTailsImg[i], -fishTail.width/2, -fishTail.height/2, fishTail.width, fishTail.height);
+            fishTail.pop();
+            fishTails.push(fishTail);
+        } else {
+            fishTails.push([]);
+            for(var j = 0; j < fishTailsImg[i].length; j++) {
+                var fishTail = createGraphics(fishTailsImg[i][j].width/2, fishTailsImg[i][j].height/2);
+                fishTail.scale(1 / pixelDensity());
+                fishTail.translate(fishTail.width/2, fishTail.height/2);
+                fishTail.rotate(PI);
+                fishTail.push();
+                fishTail.image(fishTailsImg[i][j], -fishTail.width/2, -fishTail.height/2, fishTail.width, fishTail.height);
+                fishTail.pop();
+                fishTails[fishTails.length - 1].push(fishTail);
+            }
+        }
     }
 }
 
@@ -244,8 +304,10 @@ function update() {
     var t = touchIsDown;
     for(var i = 0, l = displayTree.length; i < l; i++) {
         for(var j = 0, ll = displayTree[i].length; j < ll; j++) {
-            displayTree[i][j].step(displayTree[i], flowfield);
-            if(t) displayTree[i][j].seek(new Vec2D(touchX, touchY));
+            if(displayTree[i][j] instanceof Fish) {
+                displayTree[i][j].step(displayTree[i], flowfield);
+                if(t) displayTree[i][j].seek(new Vec2D(touchX, touchY));
+            }
         }
     }
 
@@ -280,7 +342,7 @@ function draw() {
 
         rocks[i].display(s);
         for(var j = 0, ll = displayTree[i].length; j < ll; j++) {
-            displayTree[i][j].display(s);
+            displayTree[i][j].display(s, fishes.length);
         }
 
         push();
@@ -293,18 +355,18 @@ function draw() {
             rect(0, 0, width, height);
         }
 
-        if(zen) {
+        // if(zen) {
             image(bottomGradient, -(1 - s) * width * 1.5, height - bottomGradient.height, width + (1 - s) * width * 3, bottomGradient.height);
             fill(color(currentColor.r, currentColor.g, currentColor.b));
             noStroke();
             rect(-(1 - s) * width * 1.5, height - 1, width + (1 - s) * width * 3, -(1 - s) * height * 1.5);
-        }
+        // }
         pop();
     }
 
-    for(var i = 0, l = gems.length; i < l; i++) {
-        gems[i].display();
-    }
+    // for(var i = 0, l = gems.length; i < l; i++) {
+    //     gems[i].display();
+    // }
 
     // for(var i = 0; i < fishes.length; i++) {
     //     fishes[i].display();

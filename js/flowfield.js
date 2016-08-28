@@ -26,7 +26,7 @@ Flowfield.prototype = {
             }
             xoff += 0.05;
         }
-        this.zoff += .01;
+        this.zoff += .001;
     },
 
     display: function() {

@@ -31,17 +31,18 @@ var readJSON = function(json) {
     }
 
     for(var i = 0, l = json.items.length; i < l; i++) {
-        addItem(json.items[i]);
+        addItem(json.items[i], true);
     }
 
     for(var i = 0, l = json.members.length; i < l; i++) {
-        addMember(json.members[i]);
+        addMember(json.members[i], true);
     }
 }
 
-var addItem = function(item) {
+var addItem = function(item, intro) {
     if(item._type == "Alias") {
-        gems.push(new Gem(new Vec2D(random(width), height - height / 24)));
+        gems.push(new Gem(new Vec2D(random(width), height - height / 12)));
+        displayTree[displayTree.length - 1].push(gems[gems.length - 1]);
     } else {
         var type, shape;
         switch(item._type) {
@@ -81,9 +82,9 @@ var addItem = function(item) {
         }
 
         rocks.push(new Rock(new Vec2D(random(0, width), height - height/12),
-                            constrain(map(age, minAge, maxAge, height/6, height/2), height/6, height/2),
+                            constrain(map(age, minAge, maxAge, height/6, height/1.5), height/6, height/1.5),
                             constrain(map(last, minLast, maxLast, 0, PI/10), 0, PI/10) * (random() < .5 ? -1 : 1),
-                            shape, shapes[type], item._id));
+                            shape, shapes[type], item._id, intro));
         rocks[rocks.length - 1].addAlgae();
 
         if(typeof item.comments !== 'undefined') {
@@ -99,15 +100,15 @@ var addItem = function(item) {
 var addComment = function(comment, itemId) {
     for(var i = 0; i < rocks.length; i++) {
         if(typeof itemId !== 'undefined' && rocks[i].id == itemId) {
-            rocks[i].addBranch(comment._id);
+            rocks[i].addBranch(comment._id, true);
             if(typeof comment.replies !== 'undefined') {
                 for(var j = 0, l = comment.replies.length; j < l; j++) {
-                    rocks[i].addBranch(comment.replies[j]._id, comment._id);
+                    rocks[i].addBranch(comment.replies[j]._id, true, comment._id);
                 }
             }
             return;
         } else if(rocks[i].id == comment.itemId) {
-            rocks[i].addBranch(comment._id, comment.parentCommentId);
+            rocks[i].addBranch(comment._id, false, comment.parentCommentId);
             return;
         }
     }
@@ -118,16 +119,10 @@ var addMember = function(member) {
     var index = constrain(map(member.metrics.contributor, 1, 7, 0, displayTree.length - 1), 0, displayTree.length - 1);
     index = Math.floor(index);
 
-    var body = member.metrics.graasper == 7 ?
-               fishBodies[fishBodies.length - 1] :
-               fishBodies[constrain(member.metrics.graasper - 1, 0, 2)];
+    var body = member.metrics.graasper == 0 ? 0 : member.metrics.graasper - 1;
 
-    var tail = member.metrics.graasper == 7 ?
-               fishTails[fishTails.length - 1] :
-               member.metrics.graasper > 3 ?
-               fishTails[member.metrics.graasper - 3] :
-               fishTails[0];
+    var tail = constrain(Math.floor(random(0, 4)), 0, 3);
 
-    fishes.push(new Fish(new Vec2D(width/2, -50), 3.0, 0.1, body, tail));
+    fishes.push(new Fish(new Vec2D(width/2, height - height / 12), 3.0, 0.1, body, tail));
     displayTree[index].push(fishes[fishes.length - 1]);
 }

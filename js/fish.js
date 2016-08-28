@@ -1,4 +1,4 @@
-var Fish = function(position, maxSpeed, maxForce, body, tail) {
+var Fish = function(position, maxSpeed, maxForce, body, tail, id) {
     this.position     = position;
     this.angle        = 0;
     this.previousAngle= 0;
@@ -9,6 +9,8 @@ var Fish = function(position, maxSpeed, maxForce, body, tail) {
     this.maxForce     = maxForce;
     this.body         = body;
     this.tail         = tail;
+    this.id           = id;
+    this.theta        = 0;
     this.life         = random(1000);
 }
 
@@ -27,17 +29,20 @@ Fish.prototype = {
         var sep = this.separate(fishes),
             ali = this.align(fishes),
             coh = this.cohesion(fishes),
-            fol = this.follow(flowfield);
+            fol = this.follow(flowfield),
+            wan = this.wander();
 
         sep.scaleSelf(2.0);
         ali.scaleSelf(((Math.cos(step * .01) + 1) / 2));
         coh.scaleSelf(((Math.cos(step * .01) + 1) / 2));
         fol.scaleSelf(0.5);
+        wan.scaleSelf(0.75);
 
         this.acceleration.addSelf(sep);
         this.acceleration.addSelf(ali);
         this.acceleration.addSelf(coh);
         this.acceleration.addSelf(fol);
+        this.acceleration.addSelf(wan);
     },
 
     update: function() {
@@ -54,6 +59,25 @@ Fish.prototype = {
         // this.angle += (this.velocity.heading() - this.angle) * .1;
         this.previousAngle = this.angle;
         this.angle = this.velocity.heading();
+    },
+
+    wander: function() {
+        var wanderR = 25;
+        var wanderD = 80;
+        var change  = .3;
+        this.theta += random(-change,change);
+
+        var target = this.velocity.copy();
+        target.normalize();
+        target.scaleSelf(wanderD);
+        target.addSelf(this.position);
+
+        var h = this.velocity.heading();
+
+        var offset = new Vec2D(wanderR * cos(this.theta + h), wanderR * sin(this.theta + h));
+        target.addSelf(offset);
+
+        return this.steer(target, false);
     },
 
     seek: function(target) {
@@ -127,7 +151,7 @@ Fish.prototype = {
     },
 
     separate: function(fishes) {
-        var desiredSeparation = 30.0,
+        var desiredSeparation = 50.0,
             steer             = new Vec2D(),
             count             = 0;
 
@@ -157,7 +181,7 @@ Fish.prototype = {
     },
 
     align: function(fishes) {
-        var neighborDistance = 50.0,
+        var neighborDistance = 75.0,
             steer            = new Vec2D(),
             count            = 0;
 
@@ -185,7 +209,7 @@ Fish.prototype = {
     },
 
     cohesion: function(fishes) {
-        var neighborDistance = 50.0,
+        var neighborDistance = 75.0,
             sum              = new Vec2D(),
             count            = 0;
 
@@ -207,21 +231,193 @@ Fish.prototype = {
         return sum;
     },
 
-    display: function(s) {
+    display: function(s, n) {
         push();
         translate(map(mouseX, 0, width, width/3, 2 * width/3), map(mouseY, 0, height, height/3, 2 * height/3));
         scale(s);
         translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
         translate(this.position.x, this.position.y);
         rotate(this.angle);
-        scale(.7);
+        scale(constrain(map(n, 0, 500, .7, .5), .5, .7));
         push();
-        rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
-        if(typeof this.tail !== 'undefined') {
-            image(this.tail, -this.tail.width, -this.tail.height / 2);
+        switch(this.body) {
+            case 0:
+                push();
+                translate(fishBodies[this.body].width / 8, fishBodies[this.body].height / 4);
+                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/3);
+                scale(.7);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                push();
+                translate(fishBodies[this.body].width / 8, -fishBodies[this.body].height / 4);
+                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/3);
+                scale(.7);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                break;
+
+            case 1:
+                push();
+                translate(0, fishBodies[this.body].height / 4);
+                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/3);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                push();
+                translate(0, -fishBodies[this.body].height / 4);
+                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/3);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                break;
+
+            case 2:
+                push();
+                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                break;
+
+            case 3:
+                push();
+                translate(fishBodies[this.body].width / 12, fishBodies[this.body].height / 4);
+                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/10);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                push();
+                translate(fishBodies[this.body].width / 12, -fishBodies[this.body].height / 4);
+                rotate(-cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/10);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                push();
+                translate(-fishBodies[this.body].width / 2, 0);
+                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                break;
+
+            case 4:
+                push();
+                translate(-fishBodies[this.body].width / 12, fishBodies[this.body].height / 2.8);
+                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/10);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                push();
+                translate(-fishBodies[this.body].width / 12, -fishBodies[this.body].height / 2.8);
+                rotate(-cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/10);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                push();
+                translate(-fishBodies[this.body].width / 2, 0);
+                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                break;
+
+            case 5:
+                push();
+                translate(-fishBodies[this.body].width / 12, fishBodies[this.body].height / 2.8);
+                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/5);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                push();
+                translate(-fishBodies[this.body].width / 12, -fishBodies[this.body].height / 2.8);
+                rotate(-cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/5);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                push();
+                translate(-fishBodies[this.body].width / 2, 0);
+                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                break;
+
+            case 6:
+                push();
+                translate(fishBodies[this.body].width / 12, fishBodies[this.body].height / 2);
+                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/5);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                push();
+                translate(fishBodies[this.body].width / 12, -fishBodies[this.body].height / 2);
+                rotate(-cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/5);
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                push();
+                translate(-fishBodies[this.body].width / 2, 0);
+                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
+                if(!zen) {
+                    image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
+                } else {
+                    image(fishTails[this.tail][this.body], -fishTails[this.tail][this.body].width, -fishTails[this.tail][this.body].height / 2);
+                }
+                pop();
+                break;
         }
         pop();
-        image(this.body, -this.body.width / 2, -this.body.height / 2);
+        image(fishBodies[this.body], -fishBodies[this.body].width / 2, -fishBodies[this.body].height / 2);
         pop();
     },
 

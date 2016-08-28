@@ -14,84 +14,7 @@
         <link rel="apple-touch-icon-precomposed" sizes="120x120" href="icons/apple-touch-icon-120x120.png" />
         <link rel="apple-touch-icon-precomposed" sizes="76x76" href="icons/apple-touch-icon-76x76.png" />
         <link rel="apple-touch-icon-precomposed" sizes="152x152" href="icons/apple-touch-icon-152x152.png" />
-        <style>
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
-
-            html,
-            body {
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-                position: fixed;
-            }
-
-            .inputs {
-                position: absolute;
-                top: 6px;
-                left: 3px;
-            }
-
-            #panel {
-                width: 500px;
-                height: 100%;
-                padding: 1em 1.5em;
-                position: fixed;
-                top: 0;
-                right: 0;
-                background-color: #5050d2;
-                transition: transform .5s ease-in-out;
-                transform: translateX(100%);
-            }
-
-                #panel.active {
-                    transform: translateX(0);
-                }
-
-                #spaceName {
-                    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                    font-size: 2em;
-                    color: white;
-                }
-
-            #openPanel {
-                position: fixed;
-                top: 1em;
-                right: 1em;
-                width: 40px;
-                height: 40px;
-                border: 2px solid white;
-                border-radius: 40px;
-                cursor: pointer;
-            }
-
-                #openPanel:before,
-                #openPanel:after {
-                    content: "";
-                    display: block;
-                    width: 2px;
-                    height: 15px;
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    background-color: white;
-                    transition: transform .5s ease-in-out;
-                    transform: translate(-50%, -50%) rotate(0deg);
-                }
-
-                #openPanel:after {
-                    width: 15px;
-                    height: 2px;
-                }
-
-                #panel.active ~ #openPanel:before,
-                #panel.active ~ #openPanel:after {
-                    transform: translate(-50%, -50%) rotate(-45deg);
-                }
-        </style>
+        <link rel="stylesheet" href="css/screen.css" />
         <title>Aquarium</title>
     </head>
     <body>
@@ -99,10 +22,39 @@
             <input type="button" value="Reset" onclick="location.reload();" />
             <input id="uploadJSON" accept=".json" type="file" />
         </div>
+        <h1 id="spaceName"></h1>
         <div id="panel">
-            <div id="spaceName"></div>
+            <h1>Informations</h1>
+            <div>
+                <h2>Members</h2>
+                <p>
+                    Each member is represented by a fish depending on his Graasper level, ranging from 1 to 7.
+                </p>
+                <img src="imgs/no_color/fish_body_01.png" />
+                <img src="imgs/no_color/fish_body_02.png" />
+                <img src="imgs/no_color/fish_body_03.png" />
+                <img src="imgs/no_color/fish_body_04.png" />
+                <img src="imgs/no_color/fish_body_05.png" />
+                <img src="imgs/no_color/fish_body_06.png" />
+                <img src="imgs/no_color/fish_body_07.png" />
+            </div>
+            <div>
+                <h2>Items</h2>
+                <p>
+                    Each item is represented by a column, which shape is depending on its type, its height on its age and its inclination on its last modification date.
+                </p>
+            </div>
+            <div>
+                <h2>Comments</h2>
+                <p>
+                    Each comment is reprensented by a seaweed.
+                </p>
+            </div>
         </div>
         <div id="openPanel" onclick="document.getElementById('panel').classList.toggle('active')"></div>
+        <div id="canvas">
+
+        </div>
         <script src="js/p5.min.js"></script>
         <script src="js/toxiclibs.min.js"></script>
         <script src="js/utils.js"></script>

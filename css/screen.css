@@ -1,0 +1,104 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: fixed;
+    background-color: black;
+}
+
+.inputs {
+    position: absolute;
+    top: 6px;
+    left: 3px;
+    z-index: 100;
+}
+
+#spaceName {
+    position: absolute;
+    top: .5em;
+    left: .75em;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: white;
+}
+
+#panel {
+    width: 50%;
+    height: 100%;
+    padding: 1em 1.5em;
+    position: fixed;
+    top: 0;
+    right: 0;
+    color: white;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow: auto;
+}
+
+    #panel h1 {
+        margin-bottom: 1em;
+    }
+
+    #panel div {
+        margin-bottom: 2em;
+    }
+
+        #panel div img {
+            vertical-align: middle;
+            transform: scale(.5);
+        }
+
+#openPanel {
+    width: 40px;
+    height: 40px;
+    position: fixed;
+    top: 1em;
+    right: 1em;
+    z-index: 100;
+    border: 2px solid white;
+    border-radius: 40px;
+    cursor: pointer;
+}
+
+    #openPanel:before,
+    #openPanel:after {
+        content: "";
+        display: block;
+        width: 2px;
+        height: 15px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        background-color: white;
+        transition: transform .5s ease-in-out;
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    #openPanel:after {
+        width: 15px;
+        height: 2px;
+    }
+
+    #panel.active ~ #openPanel:before,
+    #panel.active ~ #openPanel:after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+#canvas {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 10;
+    transition: transform .5s ease-in-out;
+    transform-origin: left bottom;
+    background-color: black;
+}
+
+    #panel.active ~ #canvas {
+        transform: scale(.5);
+    }
