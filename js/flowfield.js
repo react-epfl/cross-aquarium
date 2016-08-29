@@ -53,8 +53,12 @@ Flowfield.prototype = {
     lookup: function(v) {
         var col = Math.floor(constrain(v.x / this.resolution, 0, this.cols - 1));
         var row = Math.floor(constrain(v.y / this.resolution, 0, this.rows - 1));
-        var vec = this.field[col][row].copy();
-        vec = typeof vec !== 'undefined' ? vec : new Vec2D(0, 0);
+        var vec;
+        if(col == NaN || row == NaN) {
+            vec = new Vec2D(0, 0);
+        } else {
+            vec = this.field[col][row].copy();
+        }
         return vec;
     }
 }
