@@ -1,4 +1,4 @@
-var Fish = function(position, maxSpeed, maxForce, body, tail, id) {
+var Fish = function(position, maxSpeed, maxForce, body, tail, isCurrentUser) {
     this.position     = position;
     this.angle        = 0;
     this.previousAngle= 0;
@@ -9,9 +9,10 @@ var Fish = function(position, maxSpeed, maxForce, body, tail, id) {
     this.maxForce     = maxForce;
     this.body         = body;
     this.tail         = tail;
-    this.id           = id;
+    // this.id           = id;
     this.theta        = 0;
     this.life         = random(1000);
+    this.isCurrentUser = isCurrentUser;
 }
 
 Fish.prototype = {
@@ -238,7 +239,7 @@ Fish.prototype = {
         translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
         translate(this.position.x, this.position.y);
         rotate(this.angle);
-        scale(constrain(map(n, 0, 500, .7, .5), .5, .7));
+        scale(constrain(map(n, 0, 500, .7, .4), .4, .7));
         push();
         switch(this.body) {
             case 0:
@@ -418,6 +419,10 @@ Fish.prototype = {
         }
         pop();
         image(fishBodies[this.body], -fishBodies[this.body].width / 2, -fishBodies[this.body].height / 2);
+        if(this.isCurrentUser) {
+            scale((Math.cos(step * .25) + 1) / 2 * .1 + .9);
+            image(bubble, -bubble.width / 2, -bubble.height / 2);
+        }
         pop();
     },
 

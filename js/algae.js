@@ -5,6 +5,11 @@ var Algae = function(position, distBetweenPoints, shape, col) {
     this.mainCol           = col;
     this.branches          = [];
     this.scale             = 0;
+    this.randTheta         = random(-PI, PI);
+    this.randDist          = random(0, 1);
+
+    this.offset            = new Vec2D(cos(this.randTheta) * this.randDist * 60,
+                                       sin(this.randTheta) * this.randDist * 12);
 
     // this.addLeaf();
 }
@@ -16,14 +21,17 @@ Algae.prototype = {
             for(var i = 0, l = this.branches.length; i < l; i++) {
                 this.branches[i].update();
                 if(i == l - 1)
-                    this.branches[i].getLastLeaf().addForce(new Vec2D(random(-.1, .1), 0));
+                    this.branches[i].leaf.addForce(new Vec2D(random(-.1, .1), 0));
             }
         }
     },
 
-    display: function() {
+    display: function(angle) {
         push();
-        translate(this.position.x, this.position.y);
+        var x = this.position.x + this.offset.x,
+            y = this.position.y + this.offset.y * map(mouseY, 0, height, 1, 0);
+        translate(Math.cos(angle) * x - Math.sin(angle) * y,
+                  Math.sin(angle) * x + Math.cos(angle) * y);
         scale(this.scale);
         for(var i = 0, l = this.branches.length; i < l; i++) {
             this.branches[i].display(this.shape, i, l);
@@ -48,15 +56,20 @@ Algae.prototype = {
             //     this.branches.push(new Branch(this.distBetweenPoints, position, this.branches.length));
             //     this.branches[this.branches.length - 1].addLeaf(true);
             // }
-            this.branches.push(new Branch(this.distBetweenPoints, id, intro, this.mainCol, this.branches[this.branches.length - 1].getLastLeaf()));
+            this.branches.push(new Branch(this.distBetweenPoints, id, intro, this.mainCol, this.branches[this.branches.length - 1].leaf));
+            if(this.branches[this.branches.length - 2].branches.length > 0) {
+                var spring = new VerletSpring2D(this.branches[this.branches.length - 1].leaf,
+                                                this.branches[this.branches.length - 2].branches[0].leaf,
+                                                this.distBetweenPoints * 1, .3);
+                physics.addSpring(spring);
+            }
         } else {
             for(var i = 0, l = this.branches.length; i < l; i++) {
                 if(this.branches[i].id == fromId) {
-                    this.branches.push(new Branch(this.distBetweenPoints, id, intro, this.mainCol, this.branches[i].getLastLeaf()));
+                    this.branches[i].addLeaf(id, intro, this.mainCol);
                     return;
                 }
             }
-            this.branches.push(new Branch(this.distBetweenPoints, id, intro, this.mainCol, this.branches[this.branches.length - 1].getLastLeaf()));
         }
     },
 

@@ -20,6 +20,8 @@ var physics,
     fishTailsImg  = [],
     fishBodies    = [],
     fishTails     = [],
+    bubbleImg,
+    bubble,
     flowfield,
     displayTree   = [],
     canvas,
@@ -87,6 +89,7 @@ function preload() {
         fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_04_06.png'));
         fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_04_07.png'));
     }
+    bubbleImg = loadImage('imgs/bubble.png');
 }
 
 function setup() {
@@ -98,6 +101,7 @@ function setup() {
     createGradient();
     createBasicShapes();
     createFish();
+    createBubble();
 
     physics = new VerletPhysics2D();
     physics.addBehavior(new GravityBehavior(new Vec2D(0, -0.1)));
@@ -274,6 +278,16 @@ function createFish() {
             }
         }
     }
+}
+
+function createBubble() {
+    bubble = createGraphics(bubbleImg.width/2, bubbleImg.height/2);
+    bubble.scale(1 / pixelDensity());
+    bubble.translate(bubble.width/2, bubble.height/2);
+    bubble.rotate(PI);
+    bubble.push();
+    bubble.image(bubbleImg, -bubble.width/2, -bubble.height/2, bubble.width, bubble.height);
+    bubble.pop();
 }
 
 function update() {

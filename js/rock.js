@@ -8,6 +8,8 @@ var Rock = function(position, depth, angle, numPoint, shape, id, intro) {
     this.algaes   = [];
     this.id       = id;
 
+    this.maxNumBranches = random(7, 12);
+
     if(!zen) {
         if(this.numPoint == S_TRIANGLE) {
             this.destMainCol = {r: 149, g: 255, b: 135};
@@ -89,6 +91,7 @@ Rock.prototype = {
         }
         endShape(CLOSE);
 
+        push();
         translate(Math.cos(this.angle - PI/2) * this.depth, Math.sin(this.angle - PI/2) * this.depth);
         rotate(this.angle);
         fill(this.topCol.r, this.topCol.g, this.topCol.b);
@@ -105,27 +108,53 @@ Rock.prototype = {
             }
         }
         endShape(CLOSE);
+        if(debug) {
+            stroke(255);
+            ellipse(0, 0, 120, map(mouseY, 0, height, 24, 2));
+            noStroke();
+        }
         pop();
 
-        push();
         for(var i = 0, l = this.algaes.length; i < l; i++) {
-            translate(map(mouseX, 0, width, width/3, 2 * width/3), map(mouseY, 0, height, height/3, 2 * height/3));
-            scale(s);
-            translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
-            this.algaes[i].display();
+            this.algaes[i].display(this.angle);
         }
         pop();
 
     },
 
     addAlgae: function() {
-        var x = this.position.x + Math.cos(this.angle - Math.PI / 2) * this.newDepth,
-            y = this.position.y + Math.sin(this.angle - Math.PI / 2) * this.newDepth;
-        this.algaes.push(new Algae(new Vec2D(x, y), 30, this.numPoint, this.destMainCol));
+        var a = new Algae(new Vec2D(0, -this.newDepth), 30, this.numPoint, this.destMainCol);
+        for(var i = 0, l = this.algaes.length; i < l; i++) {
+            if(a.offset.y < this.algaes[i].offset.y) {
+                this.algaes.splice(i, 0, a);
+                return i;
+            }
+        }
+        this.algaes.push(a);
+        return this.algaes.length - 1;
     },
 
     addBranch: function(id, intro, fromId) {
-        this.algaes[0].addBranch(id, intro, fromId);
+        if(typeof fromId !== 'undefined') {
+            for(var i = 0, l = this.algaes.length; i < l; i++) {
+                for(var j = 0, ll = this.algaes[i].branches.length; j < ll; j++) {
+                    if(this.algaes[i].branches[j].id == fromId) {
+                        this.algaes[i].addBranch(id, intro, fromId);
+                        return;
+                    }
+                }
+            }
+            console.log("there is no parent comment with the id: " + fromId);
+        } else {
+            for(var i = 0, l = this.algaes.length; i < l; i++) {
+                if(this.algaes[i].branches.length < this.maxNumBranches) {
+                    this.algaes[i].addBranch(id, intro, fromId);
+                    return;
+                }
+            }
+            this.algaes[this.addAlgae()].addBranch(id, intro, fromId);
+            this.maxNumBranches = random(7, 12);
+        }
     },
 
     delete: function() {

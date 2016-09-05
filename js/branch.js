@@ -1,19 +1,21 @@
 var Branch = function(distBetweenPoints, id, intro, col, leaf) {
     this.distBetweenPoints = distBetweenPoints;
     this.id                = id;
-    this.leaves            = [];
     this.springs           = [];
+    this.leaf              = null;
+    this.branches          = [];
+    // this.numChildren       = 0;
 
-    this.rand = random(-10, 10);
+    // this.rand = random(-10, 10);
 
     if(!zen) {
         this.destMainCol = {r: col.r + 20, g: col.g + 20, b: col.b + 20};
         this.leafW       = 28;
-        this.leafH       = 12;
+        this.leafH       = 10;
     } else {
         this.destMainCol = {r: 32, g: 145, b: 85};
         this.leafW       = 15;
-        this.leafH       = 6;
+        this.leafH       = 5;
     }
 
     if(intro) {
@@ -32,9 +34,12 @@ Branch.prototype = {
         this.mainCol.r += (this.destMainCol.r - this.mainCol.r) * .025;
         this.mainCol.g += (this.destMainCol.g - this.mainCol.g) * .025;
         this.mainCol.b += (this.destMainCol.b - this.mainCol.b) * .025;
+
+        if(this.branches.length > 0)
+            this.branches[this.branches.length - 1].leaf.addForce(new Vec2D(random(-.1, .1), 0));
     },
 
-    display: function(shape, iii, lll) {
+    display: function(shape, iii, lll, displayLeaf) {
         push();
         var index = 0;
         for(var i = 0, l = this.springs.length; i < l; i++) {
@@ -42,20 +47,21 @@ Branch.prototype = {
             stroke(this.mainCol.r - 10, this.mainCol.g - 10, this.mainCol.b - 10);
             line(this.springs[i].a.x, this.springs[i].a.y,
                  this.springs[i].b.x, this.springs[i].b.y);
-            if(i % 3 == 2) {
+            if(i == l - 1 && typeof displayLeaf === 'undefined') {
                 push();
                 var dir = this.springs[i].b.sub(this.springs[i].a);
-                translate(this.leaves[index].x, this.leaves[index].y);
+                translate(this.leaf.x, this.leaf.y);
                 rotate(dir.heading() - PI/2);
                 translate(zen ? 0 : iii % 2 == 0 ? this.leafW : -this.leafW, 0);
+                var factor = (Math.cos(-step * .1 + iii * (Math.PI / lll)) + 1) / 2;
                 if(!zen) {
-                    fill((Math.cos(-step * .1 + iii * (Math.PI / lll)) + 1) / 2 * (currentColor.r - this.mainCol.r) + this.mainCol.r,
-                         (Math.cos(-step * .1 + iii * (Math.PI / lll)) + 1) / 2 * (currentColor.g - this.mainCol.g) + this.mainCol.g,
-                         (Math.cos(-step * .1 + iii * (Math.PI / lll)) + 1) / 2 * (currentColor.b - this.mainCol.b) + this.mainCol.b);
+                    fill(factor * (currentColor.r - this.mainCol.r) + this.mainCol.r,
+                         factor * (currentColor.g - this.mainCol.g) + this.mainCol.g,
+                         factor * (currentColor.b - this.mainCol.b) + this.mainCol.b);
                 } else {
-                    fill((Math.cos(-step * .1 + iii * (Math.PI / lll)) + 1) / 2 * (this.mainCol.r + 50 - this.mainCol.r) + this.mainCol.r,
-                         (Math.cos(-step * .1 + iii * (Math.PI / lll)) + 1) / 2 * (this.mainCol.g + 50 - this.mainCol.g) + this.mainCol.g,
-                         (Math.cos(-step * .1 + iii * (Math.PI / lll)) + 1) / 2 * (this.mainCol.b + 50 - this.mainCol.b) + this.mainCol.b);
+                    fill(factor * (this.mainCol.r + 50 - this.mainCol.r) + this.mainCol.r,
+                         factor * (this.mainCol.g + 50 - this.mainCol.g) + this.mainCol.g,
+                         factor * (this.mainCol.b + 50 - this.mainCol.b) + this.mainCol.b);
                 }
                 noStroke();
                 beginShape();
@@ -71,12 +77,16 @@ Branch.prototype = {
                     }
                 }
                 endShape(CLOSE);
-                // image(shape, -shape.width/2, -shape.height/2);
                 pop();
                 index++;
             }
         }
         pop();
+
+        for(var i = 0, l = this.branches.length; i < l; i++) {
+            if(i == 0) this.branches[i].display(shape, i, lll, true);
+            else this.branches[i].display(shape, iii + i, lll);
+        }
     },
 
     createLeaf: function(locked, fromLeaf) {
@@ -102,13 +112,21 @@ Branch.prototype = {
                 this.springs.push(spring);
 
                 if(i == 3) {
-                    this.leaves.push(p);
+                    this.leaf = p;
                 }
             }
         }
     },
 
-    getLastLeaf: function() {
-        return this.leaves[this.leaves.length - 1];
+    addLeaf: function(id, intro, mainCol) {
+        var prev;
+        if(this.branches.length > 0) {
+            prev = this.branches[this.branches.length - 1].leaf;
+        } else {
+            prev = this.leaf;
+            this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, prev));
+            prev = this.branches[this.branches.length - 1].leaf;
+        }
+        this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, prev));
     }
 }
