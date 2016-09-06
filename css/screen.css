@@ -48,9 +48,12 @@ body {
         margin-bottom: 2em;
     }
 
+        #panel div p {
+            margin-bottom: 1em;
+        }
+
         #panel div img {
-            vertical-align: middle;
-            transform: scale(.5);
+            max-width: 100%;
         }
 
 #openPanel {
