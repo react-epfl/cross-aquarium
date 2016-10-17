@@ -54,7 +54,7 @@ Flowfield.prototype = {
         var col = Math.floor(constrain(v.x / this.resolution, 0, this.cols - 1));
         var row = Math.floor(constrain(v.y / this.resolution, 0, this.rows - 1));
         var vec;
-        if(isNaN(col) || isNaN(row)) {
+        if(typeof this.field[col][row] == 'undefined') {
             vec = new Vec2D(0, 0);
         } else {
             vec = this.field[col][row].copy();

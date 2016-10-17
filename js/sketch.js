@@ -22,6 +22,8 @@ var physics,
     fishTails     = [],
     bubbleImg,
     bubble,
+    halfBubbleImg,
+    halfBubble,
     flowfield,
     displayTree   = [],
     canvas,
@@ -90,6 +92,7 @@ function preload() {
         fishTailsImg[fishTailsImg.length - 1].push(loadImage('imgs/color/fish_tail_04_07.png'));
     }
     bubbleImg = loadImage('imgs/bubble.png');
+    halfBubbleImg = loadImage('imgs/half_bubble.png');
 }
 
 function setup() {
@@ -288,13 +291,23 @@ function createBubble() {
     bubble.push();
     bubble.image(bubbleImg, -bubble.width/2, -bubble.height/2, bubble.width, bubble.height);
     bubble.pop();
+
+    halfBubble = createGraphics(halfBubbleImg.width/2, halfBubbleImg.height/2);
+    halfBubble.scale(1 / pixelDensity());
+    halfBubble.translate(halfBubble.width/2, halfBubble.height/2);
+    halfBubble.rotate(PI);
+    halfBubble.push();
+    halfBubble.image(halfBubbleImg, -halfBubble.width/2, -halfBubble.height/2, halfBubble.width, halfBubble.height);
+    halfBubble.pop();
 }
 
 function update() {
     physics.update();
 
-    if(random() < .05) {
+    if(displayTree.length > 0 && random() < .05) {
         bubbles.push(new Bubble(new Vec2D(random(width/6, width - width/6), random(height - height/3, height - height/12))));
+        var rand = Math.floor(Math.random() * (displayTree.length - 1));
+        displayTree[rand].push(bubbles[bubbles.length - 1]);
     }
 
     for(var i = bubbles.length - 1; i >= 0; i--) {
@@ -321,6 +334,11 @@ function update() {
             if(displayTree[i][j] instanceof Fish) {
                 displayTree[i][j].step(displayTree[i], flowfield);
                 if(t) displayTree[i][j].seek(new Vec2D(touchX, touchY));
+            } else if(displayTree[i][j] instanceof Bubble) {
+                if(displayTree[i][j].isDead()) {
+                    var b = displayTree[i].splice(j, 1);
+                    b = null;
+                }
             }
         }
     }
@@ -345,8 +363,10 @@ function draw() {
         if(step - introBeginning == 120) intro = false;
     }
 
-    if(debug) flowfield.display();
+    // if(debug) flowfield.display();
 
+    noFill();
+    stroke(255);
     for(var i = 0, l = bubbles.length; i < l; i++) {
         bubbles[i].display();
     }
@@ -363,28 +383,17 @@ function draw() {
         translate(map(mouseX, 0, width, width/2 - width/4, width/2 + width/4), map(mouseY, 0, height, height/4, 3 * height/4));
         scale(s);
         translate(-map(mouseX, 0, width, width/2 - width/4, width/2 + width/4), -map(mouseY, 0, height, height/4, 3 * height/4));
-
         if(debug) {
             stroke(255);
             rect(0, 0, width, height);
         }
-
-        // if(zen) {
-            image(bottomGradient, -(1 - s) * width * 1.5, height - bottomGradient.height, width + (1 - s) * width * 3, bottomGradient.height);
-            fill(color(currentColor.r, currentColor.g, currentColor.b));
-            noStroke();
-            rect(-(1 - s) * width * 1.5, height - 1, width + (1 - s) * width * 3, -(1 - s) * height * 1.5);
-        // }
+        image(bottomGradient, -(1 - s) * width * 1.5, height - bottomGradient.height, width + (1 - s) * width * 3, bottomGradient.height);
+        fill(color(currentColor.r, currentColor.g, currentColor.b));
+        noStroke();
+        rect(-(1 - s) * width * 1.5, height - 1, width + (1 - s) * width * 3, -(1 - s) * height * 1.5);
         pop();
     }
 
-    // for(var i = 0, l = gems.length; i < l; i++) {
-    //     gems[i].display();
-    // }
-
-    // for(var i = 0; i < fishes.length; i++) {
-    //     fishes[i].display();
-    // }
 
     if(touchIsDown) {
         image(halo, touchX - halo.width/2, touchY - halo.height/2);

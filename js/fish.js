@@ -1,4 +1,4 @@
-var Fish = function(position, maxSpeed, maxForce, body, tail, isCurrentUser) {
+var Fish = function(position, maxSpeed, maxForce, body, tail, id, isCurrentUser) {
     this.position     = position;
     this.angle        = 0;
     this.previousAngle= 0;
@@ -9,7 +9,7 @@ var Fish = function(position, maxSpeed, maxForce, body, tail, isCurrentUser) {
     this.maxForce     = maxForce;
     this.body         = body;
     this.tail         = tail;
-    // this.id           = id;
+    this.id           = id;
     this.theta        = 0;
     this.life         = random(1000);
     this.isCurrentUser = isCurrentUser;
@@ -17,12 +17,9 @@ var Fish = function(position, maxSpeed, maxForce, body, tail, isCurrentUser) {
 
 Fish.prototype = {
     step: function(fishes, flowfield) {
-        // this.maxSpeed = map(this.position.y, height - 500, height - 100, 6.0, 1.0);
-        // this.maxSpeed = constrain(this.maxSpeed, 1.0, 6.0);
         this.flock(fishes, flowfield);
         this.update();
         this.checkBorders();
-        // this.life += map(this.velocity.magnitude(), 0, this.maxSpeed, .1, 1);
         this.life++;
     },
 
@@ -47,9 +44,14 @@ Fish.prototype = {
     },
 
     update: function() {
-        // this.maxSpeed = map(mouseX, 0, width, 3, 10);
         this.velocity.addSelf(this.acceleration);
         this.velocity.limit(this.maxSpeed);
+
+        if(isNaN(this.velocity.x)){
+            this.velocity.x = this.maxSpeed;
+        } else if(isNaN(this.velocity.y)) {
+            this.velocity.y = this.maxSpeed;
+        }
 
         this.position.addSelf(this.velocity);
 
@@ -57,7 +59,6 @@ Fish.prototype = {
 
         this.maxSpeed += (this.initialMaxSpeed - this.maxSpeed) * .05;
 
-        // this.angle += (this.velocity.heading() - this.angle) * .1;
         this.previousAngle = this.angle;
         this.angle = this.velocity.heading();
     },
@@ -108,8 +109,6 @@ Fish.prototype = {
     },
 
     checkBorders: function() {
-        // if(this.position.x < -50) this.position.x = width + 50;
-        // else if(this.position.x > width + 50) this.position.x = -50;
         if(this.position.x < 50) {
             var steer = new Vec2D(this.maxSpeed, this.velocity.x);
             steer.normalize();
@@ -239,7 +238,7 @@ Fish.prototype = {
         translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
         translate(this.position.x, this.position.y);
         rotate(this.angle);
-        scale(constrain(map(n, 0, 500, .7, .4), .4, .7));
+        scale(constrain(map(n, 0, 200, .7, .4), .4, .7));
         push();
         switch(this.body) {
             case 0:

@@ -23,20 +23,26 @@
             <input id="uploadJSON" accept=".json" type="file" />
         </div>
         <div id="spaceName"></div>
-        <div id="spaceTree">
-            <a class="parent">Home</a>
-            <a class="parent">CROSS</a>
-            <a class="parent">Minutes</a>
-            <a class="child">Sous-espace</a><a class="child">Sous-espace</a><a class="child">Sous-espace</a><a class="child">Sous-espace</a>
-        </div>
-        <div id="panel" class="active">
+        <div id="spaceTree"></div>
+        <div id="panel">
             <h1>Informations</h1>
             <div>
                 <h2>Members</h2>
                 <p>
-                    Each member is represented by a fish depending on his Graasper level, ranging from 1 to 7.
+                    Each member is represented by a fish depending on his Graasper level, ranging from 1 to 7. A member will appear closer to the foreground if he is more active on Graasp.
                 </p>
                 <img src="imgs/fishes.png" />
+                <table>
+                    <tr>
+                        <td>1</td>
+                        <td>2</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>6</td>
+                        <td>7</td>
+                    </tr>
+                </table>
             </div>
             <div>
                 <h2>Items</h2>
@@ -44,19 +50,32 @@
                     Each item is represented by a column, which shape is depending on its type, its height on its age and its inclination on its last modification date.
                 </p>
                 <img src="imgs/items.png" />
+                <table>
+                    <tr>
+                        <td>Resource</td>
+                        <td>Application</td>
+                        <td>Topic</td>
+                        <td>Space</td>
+                    </tr>
+                </table>
             </div>
             <div>
                 <h2>Comments</h2>
                 <p>
-                    Each comment is reprensented by a seaweed.
+                    Each comment is reprensented by a seaweed, with the leaf's shape corresponding to the item's one.
                 </p>
                 <img src="imgs/comments.png" />
             </div>
+            <div>
+                <h2>Private mode</h2>
+                <p>
+                    In private mode, each element created by the currently logged user (including the member itself) is circled by a halo.
+                </p>
+                <img src="imgs/private.png" />
+            </div>
         </div>
         <div id="openPanel" onclick="document.getElementById('panel').classList.toggle('active')"></div>
-        <div id="canvas">
-
-        </div>
+        <div id="canvas"></div>
         <script src="js/p5.min.js"></script>
         <script src="js/toxiclibs.min.js"></script>
         <script src="js/utils.js"></script>

@@ -1,9 +1,10 @@
-var Branch = function(distBetweenPoints, id, intro, col, leaf) {
+var Branch = function(distBetweenPoints, id, intro, col, isByUser, leaf) {
     this.distBetweenPoints = distBetweenPoints;
     this.id                = id;
     this.springs           = [];
     this.leaf              = null;
     this.branches          = [];
+    this.isByUser          = isByUser;
     // this.numChildren       = 0;
 
     // this.rand = random(-10, 10);
@@ -40,7 +41,6 @@ Branch.prototype = {
     },
 
     display: function(shape, iii, lll, displayLeaf) {
-        push();
         var index = 0;
         for(var i = 0, l = this.springs.length; i < l; i++) {
             noFill();
@@ -77,11 +77,22 @@ Branch.prototype = {
                     }
                 }
                 endShape(CLOSE);
+                if(this.isByUser) {
+                    scale((Math.cos(step * .25) + 1) / 2 * .1 + .5);
+                    image(bubble, -bubble.width / 2, -bubble.height / 2);
+                }
                 pop();
                 index++;
             }
         }
-        pop();
+
+        if(debug) {
+            stroke(255, 0, 0);
+            for(var i = 0, l = this.springs.length; i < l; i++) {
+                line(this.springs[i].a.x, this.springs[i].a.y,
+                     this.springs[i].b.x, this.springs[i].b.y);
+            }
+        }
 
         for(var i = 0, l = this.branches.length; i < l; i++) {
             if(i == 0) this.branches[i].display(shape, i, lll, true);
@@ -105,7 +116,7 @@ Branch.prototype = {
                     prev = physics.particles[physics.particles.length - 2];
                 }
 
-                var spring = new VerletSpring2D(p, prev, this.distBetweenPoints / (zen ? 1.5 : 3), .3);
+                var spring = new VerletSpring2D(prev, p, this.distBetweenPoints / (zen ? 1.5 : 3), .3);
 
                 physics.addSpring(spring);
 
@@ -118,15 +129,57 @@ Branch.prototype = {
         }
     },
 
-    addLeaf: function(id, intro, mainCol) {
+    addLeaf: function(id, intro, mainCol, isByUser) {
         var prev;
         if(this.branches.length > 0) {
             prev = this.branches[this.branches.length - 1].leaf;
         } else {
             prev = this.leaf;
-            this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, prev));
+            this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, isByUser, prev));
             prev = this.branches[this.branches.length - 1].leaf;
         }
-        this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, prev));
+        this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, isByUser, prev));
+    },
+
+    delete: function() {
+        for(var i = 0, l = this.branches.length; i < l; i++) {
+            this.branches[i].delete();
+            this.branches[i] = null;
+        }
+
+        for(var i = this.springs.length - 1; i > 0; i--) {
+            var s = this.springs.splice(i, 1);
+            physics.removeSpringElements(s);
+            s = null;
+            this.lead = null;
+        }
+    },
+
+    deleteComment: function(commentId) {
+        for(var i = 0, l = this.branches.length; i < l; i++) {
+            if(this.branches[i].deleteComment(commentId)) {
+                if(i != l - 1) {
+                    this.branches[i + 1].springs[0].a = this.branches[i - 1].leaf;
+                }
+                var b = this.branches.splice(i, 1);
+                b = null;
+                return false;
+            }
+        }
+
+        if(this.id == commentId) {
+            for(var i = 0, l = this.branches.length; i < l; i++) {
+                this.branches[i].delete();
+            }
+            for(var i = this.springs.length - 1; i > 0; i--) {
+                var s = this.springs.splice(i, 1);
+                physics.removeSpringElements(s);
+                s = null;
+            }
+            this.leaf = null;
+            return true;
+        }
+
+        return false;
     }
 }

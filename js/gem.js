@@ -1,4 +1,5 @@
-var Gem = function(position) {
+var Gem = function(id, position) {
+    this.id       = id;
     this.position = position;
     this.rand     = -Math.PI/2; //Math.random() * Math.PI * 2;
     this.depth    = 0;
@@ -56,9 +57,12 @@ Gem.prototype = {
         this.gem.addForce(new Vec2D(random(-.1, .1), 0));
     },
 
-    display: function() {
+    display: function(s) {
         push();
-        translate(this.position.x, this.position.y - map(mouseY, 0, height, 0, height / 24));
+        translate(map(mouseX, 0, width, width/3, 2 * width/3), map(mouseY, 0, height, height/3, 2 * height/3));
+        scale(s);
+        translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
+        translate(this.position.x, this.position.y);
         scale(this.scale);
         for(var i = 0, l = this.springs.length; i < l; i++) {
             noFill();
@@ -75,7 +79,7 @@ Gem.prototype = {
                 translate(this.gem.x, this.gem.y);
                 rotate(dir.heading() - PI/2);
                 if(!zen) {
-                    fill(118, 55, 172);
+                    fill(137, 64, 200);
                 } else {
                     fill(230);
                 }
@@ -102,7 +106,7 @@ Gem.prototype = {
                 endShape(CLOSE);
                 noFill();
                 if(!zen) {
-                    stroke(105, 49, 153);
+                    stroke(123, 57, 179);
                 } else {
                     stroke(255);
                 }
@@ -113,7 +117,7 @@ Gem.prototype = {
                 }
                 endShape();
                 if(!zen) {
-                    fill(105, 49, 153);
+                    fill(123, 57, 179);
                 } else {
                     fill(255);
                 }
@@ -128,5 +132,13 @@ Gem.prototype = {
             }
         }
         pop();
+    },
+
+    delete: function() {
+        for(var i = this.springs.length - 1; i > 0; i--) {
+            var s = this.springs.splice(i, 1);
+            physics.removeSpringElements(s);
+            s = null;
+        }
     }
 }

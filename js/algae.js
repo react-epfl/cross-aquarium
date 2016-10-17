@@ -39,24 +39,12 @@ Algae.prototype = {
         pop();
     },
 
-    addBranch: function(id, intro, fromId) {
+    addBranch: function(id, intro, isByUser, fromId) {
         if(this.branches.length == 0) {
-            this.branches.push(new Branch(this.distBetweenPoints, id, intro, this.mainCol));
+            this.branches.push(new Branch(this.distBetweenPoints, id, intro, this.mainCol, isByUser));
             this.branches[0].createLeaf(true);
         } else if(typeof fromId === 'undefined') {
-            // if(algaeKind == 0) {
-            //     var position = new Vec2D(random(-25, 25), random(-10, 10));
-            //     for(var i = 0, l = this.branches.length; i < l; i++) {
-            //         if(position.y < this.branches[i].position.y) {
-            //             this.branches.splice(i, 0, new Branch(this.distBetweenPoints, position, this.branches.length));
-            //             this.branches[i].addLeaf(true);
-            //             return;
-            //         }
-            //     }
-            //     this.branches.push(new Branch(this.distBetweenPoints, position, this.branches.length));
-            //     this.branches[this.branches.length - 1].addLeaf(true);
-            // }
-            this.branches.push(new Branch(this.distBetweenPoints, id, intro, this.mainCol, this.branches[this.branches.length - 1].leaf));
+            this.branches.push(new Branch(this.distBetweenPoints, id, intro, this.mainCol, isByUser, this.branches[this.branches.length - 1].leaf));
             if(this.branches[this.branches.length - 2].branches.length > 0) {
                 var spring = new VerletSpring2D(this.branches[this.branches.length - 1].leaf,
                                                 this.branches[this.branches.length - 2].branches[0].leaf,
@@ -66,20 +54,31 @@ Algae.prototype = {
         } else {
             for(var i = 0, l = this.branches.length; i < l; i++) {
                 if(this.branches[i].id == fromId) {
-                    this.branches[i].addLeaf(id, intro, this.mainCol);
+                    this.branches[i].addLeaf(id, intro, this.mainCol, isByUser);
                     return;
                 }
             }
         }
     },
 
-    delete: function(physics) {
-        for(var i = 0, l = this.particles.length; i < l; i++) {
-            physics.removeParticle(this.particles[i]);
+    delete: function() {
+        for(var i = 0, l = this.branches.length; i < l; i++) {
+            this.branches[i].delete();
+            this.branches[i] = null;
         }
+    },
 
-        for(var i = 0, l = this.springs.length; i < l; i++) {
-            physics.removeParticle(this.springs[i]);
+    deleteComment: function(commentId) {
+        for(var i = 0, l = this.branches.length; i < l; i++) {
+            if(this.branches[i].deleteComment(commentId)) {
+                if(i != l - 1) {
+                    this.branches[i + 1].springs[0].a = this.branches[i - 1].leaf;
+                }
+                var b = this.branches.splice(i, 1);
+                b = null;
+                return true;
+            }
         }
+        return false;
     }
 }
