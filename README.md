@@ -1,6 +1,7 @@
 # cross-aquarium
 
 The code is still quite "raw" at the moment and is going to change a lot.
+There is still a lot of dynamic drawing involved (particularly on the seaweed), needs investigation for performances.
 
 ### Content
 ```
