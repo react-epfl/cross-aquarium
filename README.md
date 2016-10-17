@@ -11,6 +11,8 @@ toxiclibs.js  particles/springs utils library
 ```
 
 ```
+jsonReader.js add/remove item/member/comment functions
+
 flowfield.js  array of random vectors for fishes to look at to add random movement
 
 rock.js       representation of an item and its comments
