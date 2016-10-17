@@ -1,6 +1,6 @@
 # cross-aquarium
 
-There is still a lot of dynamic drawing involved (particularly on the seaweed), needs investigation for performances.
+There is still a lot of dynamic drawing involved (particularly on the seaweed), needs investigation for performances. Also a good cleanup of the code would be nice, right now it is just a mess.
 
 ### Content
 ```
