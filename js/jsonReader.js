@@ -107,7 +107,7 @@ var addItem = function(item, intro) {
 
 var deleteItem = function(item) {
     for(var i = 0, l = gems.length; i < l; i++) {
-        if(gems[i].id == item.id) {
+        if(gems[i].id == item._id) {
             var deletedItem = gems.splice(i, 1)[0];
             deletedItem.delete();
             break;
@@ -125,7 +125,7 @@ var deleteItem = function(item) {
         }
     } else {
         for(var i = 0, l = rocks.length; i < l; i++) {
-            if(rocks[i].id == item.id) {
+            if(rocks[i].id == item._id) {
                 var deletedItem = rocks.splice(i, 1)[0];
                 deletedItem.delete();
                 break;
@@ -170,7 +170,7 @@ var addComment = function(comment, itemId) {
 
 var deleteComment = function(comment) {
     for(var i = 0, l = rocks.length; i < l; i++) {
-        if(rocks[i].deleteComment(comment.id)) return;
+        if(rocks[i].deleteComment(comment._id)) return;
     }
     console.log("No comment with id: " + comment._id + ", or it may be a reply");
 }
@@ -189,7 +189,7 @@ var addMember = function(member) {
 
 var deleteMember = function(member) {
     for(var i = 0, l = fishes.length; i < l; i++) {
-        if(fishes[i].id == member.id) {
+        if(fishes[i].id == member._id) {
             var deletedMember = fishes.splice(i, 1)[0];
             break;
         }
