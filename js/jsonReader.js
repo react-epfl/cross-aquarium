@@ -107,9 +107,9 @@ var addItem = function(item, intro) {
 
 var deleteItem = function(item) {
     for(var i = 0, l = gems.length; i < l; i++) {
-        if(gems[i].id == item._id) {
-            var deletedItem = gems.splice(i, 1);
-            deletedItem[0].delete();
+        if(gems[i].id == item.id) {
+            var deletedItem = gems.splice(i, 1)[0];
+            deletedItem.delete();
             break;
         }
     }
@@ -117,7 +117,7 @@ var deleteItem = function(item) {
     if(deletedItem != null) {
         for(var i = 0, l = displayTree.length; i < l; i++) {
             for(var j = 0, ll = displayTree[i].length; j < ll; j++) {
-                if(displayTree[i][j].id == deletedItem._id) {
+                if(displayTree[i][j].id == deletedItem.id) {
                     displayTree[i].splice(j, 1);
                     break;
                 }
@@ -125,22 +125,22 @@ var deleteItem = function(item) {
         }
     } else {
         for(var i = 0, l = rocks.length; i < l; i++) {
-            if(rocks[i].id == item._id) {
-                var deletedItem = rocks.splice(i, 1);
-                deletedItem[0].delete();
+            if(rocks[i].id == item.id) {
+                var deletedItem = rocks.splice(i, 1)[0];
+                deletedItem.delete();
                 break;
             }
         }
     }
 
     if(deletedItem == null) {
-        console.log("No item with id: " + item._id);
+        console.log("No item with id: " + item.id);
         return;
     }
 
     for(var i = 0, l = displayTree.length; i < l; i++) {
         for(var j = 0, ll = displayTree[i].length; j < ll; j++) {
-            if(displayTree[i][j].id == deletedItem._id) {
+            if(displayTree[i][j].id == deletedItem.id) {
                 displayTree[i].splice(j, 1);
                 break;
             }
@@ -170,7 +170,7 @@ var addComment = function(comment, itemId) {
 
 var deleteComment = function(comment) {
     for(var i = 0, l = rocks.length; i < l; i++) {
-        if(rocks[i].deleteComment(comment._id)) return;
+        if(rocks[i].deleteComment(comment.id)) return;
     }
     console.log("No comment with id: " + comment._id + ", or it may be a reply");
 }
@@ -189,20 +189,20 @@ var addMember = function(member) {
 
 var deleteMember = function(member) {
     for(var i = 0, l = fishes.length; i < l; i++) {
-        if(fishes[i].id == member._id) {
-            var deletedMember = fishes.splice(i, 1);
+        if(fishes[i].id == member.id) {
+            var deletedMember = fishes.splice(i, 1)[0];
             break;
         }
     }
 
     if(deletedMember == null) {
-        console.log("No member with id: " + member._id);
+        console.log("No member with id: " + member.id);
         return;
     }
 
     for(var i = 0, l = displayTree.length; i < l; i++) {
         for(var j = 0, ll = displayTree[i].length; j < ll; j++) {
-            if(displayTree[i][j].id == deletedMember._id) {
+            if(displayTree[i][j].id == deletedMember.id) {
                 displayTree[i].splice(j, 1);
                 break;
             }
