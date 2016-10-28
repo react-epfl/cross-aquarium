@@ -354,7 +354,6 @@ function update() {
 function draw() {
     update();
 
-    // background(0);
     image(bg, 0, 0, width, height);
 
     if(intro && step - introBeginning <= 120) {
@@ -362,8 +361,6 @@ function draw() {
         translate(random(-offset, offset), random(-offset, offset));
         if(step - introBeginning == 120) intro = false;
     }
-
-    // if(debug) flowfield.display();
 
     noFill();
     stroke(255);
@@ -399,9 +396,9 @@ function draw() {
         image(halo, touchX - halo.width/2, touchY - halo.height/2);
     }
 
-    fill(255);
-    noStroke();
-    text(Math.floor(frameRate()) + "fps", 5, 40);
+    // fill(255);
+    // noStroke();
+    // text(Math.floor(frameRate()) + "fps", 5, 40);
 }
 
 function windowResized() {

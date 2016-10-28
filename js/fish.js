@@ -1,4 +1,4 @@
-var Fish = function(position, maxSpeed, maxForce, body, tail, id, isCurrentUser) {
+var Fish = function(position, maxSpeed, maxForce, body, tail, id, isByCurrentUser) {
     this.position     = position;
     this.angle        = 0;
     this.previousAngle= 0;
@@ -12,7 +12,7 @@ var Fish = function(position, maxSpeed, maxForce, body, tail, id, isCurrentUser)
     this.id           = id;
     this.theta        = 0;
     this.life         = random(1000);
-    this.isCurrentUser = isCurrentUser;
+    this.isByCurrentUser = isByCurrentUser;
 }
 
 Fish.prototype = {
@@ -418,7 +418,7 @@ Fish.prototype = {
         }
         pop();
         image(fishBodies[this.body], -fishBodies[this.body].width / 2, -fishBodies[this.body].height / 2);
-        if(this.isCurrentUser) {
+        if(this.isByCurrentUser && isSessionPrivate) {
             scale((Math.cos(step * .25) + 1) / 2 * .1 + .9);
             image(bubble, -bubble.width / 2, -bubble.height / 2);
         }

@@ -4,9 +4,12 @@ var json,
     minLast = -1,
     maxLast = -1,
     spaceTree = document.getElementById('spaceTree'),
-    spaceInc  = 0;
+    spaceInc  = 0,
+    isSessionPrivate;
 
-var readJSON = function(json) {
+var readJSON = function(json, privacy) {
+    isSessionPrivate = privacy;
+
     var spaceName = document.getElementById('spaceName');
     if(spaceName !== null) spaceName.innerHTML = json.space.name;
 
@@ -34,6 +37,10 @@ var readJSON = function(json) {
 
     for(var i = 0, l = json.items.length; i < l; i++) {
         addItem(json.items[i], true);
+    }
+
+    if(displayTree.length == 0) {
+        displayTree.push([]);
     }
 
     for(var i = 0, l = json.members.length; i < l; i++) {

@@ -1,10 +1,10 @@
-var Branch = function(distBetweenPoints, id, intro, col, isByUser, leaf) {
+var Branch = function(distBetweenPoints, id, intro, col, isByCurrentUser, leaf) {
     this.distBetweenPoints = distBetweenPoints;
     this.id                = id;
     this.springs           = [];
     this.leaf              = null;
     this.branches          = [];
-    this.isByUser          = isByUser;
+    this.isByCurrentUser          = isByCurrentUser;
     // this.numChildren       = 0;
 
     // this.rand = random(-10, 10);
@@ -77,7 +77,7 @@ Branch.prototype = {
                     }
                 }
                 endShape(CLOSE);
-                if(this.isByUser) {
+                if(this.isByCurrentUser && isSessionPrivate) {
                     scale((Math.cos(step * .25) + 1) / 2 * .1 + .5);
                     image(bubble, -bubble.width / 2, -bubble.height / 2);
                 }
@@ -129,16 +129,16 @@ Branch.prototype = {
         }
     },
 
-    addLeaf: function(id, intro, mainCol, isByUser) {
+    addLeaf: function(id, intro, mainCol, isByCurrentUser) {
         var prev;
         if(this.branches.length > 0) {
             prev = this.branches[this.branches.length - 1].leaf;
         } else {
             prev = this.leaf;
-            this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, isByUser, prev));
+            this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, isByCurrentUser, prev));
             prev = this.branches[this.branches.length - 1].leaf;
         }
-        this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, isByUser, prev));
+        this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, isByCurrentUser, prev));
     },
 
     delete: function() {

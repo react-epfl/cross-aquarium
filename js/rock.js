@@ -1,4 +1,4 @@
-var Rock = function(position, depth, angle, numPoint, shape, id, intro, isByUser) {
+var Rock = function(position, depth, angle, numPoint, shape, id, intro, isByCurrentUser) {
     this.position = position;
     this.depth    = 0;
     this.newDepth = depth;
@@ -7,7 +7,7 @@ var Rock = function(position, depth, angle, numPoint, shape, id, intro, isByUser
     this.shape    = shape;
     this.algaes   = [];
     this.id       = id;
-    this.isByUser = isByUser;
+    this.isByCurrentUser = isByCurrentUser;
 
     this.maxNumBranches = random(7, 12);
 
@@ -117,7 +117,7 @@ Rock.prototype = {
             noStroke();
         }
 
-        if(this.isByUser) {
+        if(this.isByCurrentUser && isSessionPrivate) {
             scale((Math.cos(step * .25) + 1) / 2 * .05 + .85);
             rotate(Math.PI);
             image(halfBubble, -halfBubble.width / 2, -halfBubble.height / 6);
@@ -144,12 +144,12 @@ Rock.prototype = {
         return this.algaes.length - 1;
     },
 
-    addBranch: function(id, intro, isByUser, fromId) {
+    addBranch: function(id, intro, isByCurrentUser, fromId) {
         if(typeof fromId !== 'undefined') {
             for(var i = 0, l = this.algaes.length; i < l; i++) {
                 for(var j = 0, ll = this.algaes[i].branches.length; j < ll; j++) {
                     if(this.algaes[i].branches[j].id == fromId) {
-                        this.algaes[i].addBranch(id, intro, isByUser, fromId);
+                        this.algaes[i].addBranch(id, intro, isByCurrentUser, fromId);
                         return;
                     }
                 }
@@ -158,11 +158,11 @@ Rock.prototype = {
         } else {
             for(var i = 0, l = this.algaes.length; i < l; i++) {
                 if(this.algaes[i].branches.length < this.maxNumBranches) {
-                    this.algaes[i].addBranch(id, intro, isByUser, fromId);
+                    this.algaes[i].addBranch(id, intro, isByCurrentUser, fromId);
                     return;
                 }
             }
-            this.algaes[this.addAlgae()].addBranch(id, intro, isByUser, fromId);
+            this.algaes[this.addAlgae()].addBranch(id, intro, isByCurrentUser, fromId);
             this.maxNumBranches = random(7, 12);
         }
     },
