@@ -4,14 +4,21 @@ var json,
     minLast = -1,
     maxLast = -1,
     spaceTree = document.getElementById('spaceTree'),
+    spaceName = document.getElementById('spaceName'),
     spaceInc  = 0,
     isSessionPrivate;
 
 var readJSON = function(json, privacy) {
     isSessionPrivate = privacy;
 
-    var spaceName = document.getElementById('spaceName');
-    if(spaceName !== null) spaceName.innerHTML = json.space.name;
+    spaceName.innerHTML = json.space.name;
+    if(json.space.parent != null) {
+        var a = document.createElement('a');
+        a.setAttribute('href', 'http://graasp.eu/spaces/' + json.space.parent._id + '/aquarium' + (zen ? "?zen" : ""));
+        a.classList.add('gotoParent');
+        a.innerHTML = "&uarr;";
+        spaceName.appendChild(a);
+    }
 
     for(var i = 0, l = json.items.length; i < l; i++) {
         var age = new Date(json.items[i].created);
@@ -75,9 +82,10 @@ var addItem = function(item, intro) {
                 shape = S_CIRCLE;
                 if(spaceTree.innerHTML != '') spaceTree.innerHTML += ', ';
                 var a = document.createElement('a');
-                a.setAttribute('href', 'http://graasp.eu/spaces/' + item._id + '/aquarium');
-                a.innerHTML = typeof item.name !== 'undefined' ? item.name : 'Subspace ' + spaceInc++;
+                a.setAttribute('href', 'http://graasp.eu/spaces/' + item._id + '/aquarium' + (zen ? "?zen" : ""));
+                a.innerHTML = typeof item.name !== 'undefined' ? item.name : 'Subspace ' + spaceInc;
                 spaceTree.appendChild(a);
+                spaceInc++;
                 break;
         }
 
