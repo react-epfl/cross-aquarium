@@ -112,6 +112,10 @@ function setup() {
     flowfield = new Flowfield(50);
 
     strokeWeight(2);
+
+    if(app.aquariumData) {
+        readJSON(app.aquariumData);
+    }
 }
 
 function createHalo() {
