@@ -37,7 +37,7 @@
                 <p>
                     Each member is represented by a fish depending on his Graasper level, ranging from 1 to 7. A member will appear closer to the foreground if he is more active on Graasp.
                 </p>
-                <img src="imgs/fishes.png" />
+                <img data-src="fishes" />
                 <table>
                     <tr>
                         <td>1</td>
@@ -55,7 +55,7 @@
                 <p>
                     Each item is represented by a column, which shape is depending on its type, its height on its age and its inclination on its last modification date.
                 </p>
-                <img src="imgs/items.png" />
+                <img data-src="items" />
                 <table>
                     <tr>
                         <td>Resource</td>
@@ -70,14 +70,14 @@
                 <p>
                     Each comment is reprensented by a seaweed, with the leaf's shape corresponding to the item's one.
                 </p>
-                <img src="imgs/comments.png" />
+                <img data-src="comments" />
             </div>
             <div>
                 <h2>Private mode</h2>
                 <p>
                     In private mode, each element created by the currently logged user (including the member itself) is circled by a halo.
                 </p>
-                <img src="imgs/private.png" />
+                <img data-src="private" />
             </div>
         </div>
         <div id="openPanel" onclick="document.getElementById('panel').classList.toggle('active')"></div>
@@ -94,19 +94,30 @@
             var zen = false;
 
             var switchToZenWorld = document.getElementById('switchToZenWorld'),
-                switchToPopWorld = document.getElementById('switchToPopWorld');
+                switchToPopWorld = document.getElementById('switchToPopWorld'),
+                imgs             = document.getElementsByTagName('img');;
             if(zen) {
                 switchToZenWorld.classList.add('active');
                 switchToPopWorld.addEventListener('click', function(e) {
                     e.preventDefault();
                     window.location = window.location;
                 }, false);
+                for(var i = 0, l = imgs.length; i < l; i++) {
+                    if(imgs[i].getAttribute('data-src') != null) {
+                        imgs[i].src = "imgs/" + imgs[i].getAttribute('data-src') + "-zen.png";
+                    }
+                }
             } else {
                 switchToPopWorld.classList.add('active');
                 switchToZenWorld.addEventListener('click', function(e) {
                     e.preventDefault();
                     window.location = window.location + '?zen';
                 }, false);
+                for(var i = 0, l = imgs.length; i < l; i++) {
+                    if(imgs[i].getAttribute('data-src') != null) {
+                        imgs[i].src = "imgs/" + imgs[i].getAttribute('data-src') + "-pop.png";
+                    }
+                }
             }
 
             var uploadJSON = document.getElementById('uploadJSON');
