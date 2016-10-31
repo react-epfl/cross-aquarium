@@ -132,16 +132,16 @@ Branch.prototype = {
         }
     },
 
-    addLeaf: function(id, intro, mainCol, isByCurrentUser) {
+    addLeaf: function(id, score, intro, mainCol, isByCurrentUser) {
         var prev;
         if(this.branches.length > 0) {
             prev = this.branches[this.branches.length - 1].leaf;
         } else {
             prev = this.leaf;
-            this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, isByCurrentUser, prev));
+            this.branches.push(new Branch(this.distBetweenPoints, id, score, intro, mainCol, isByCurrentUser, prev));
             prev = this.branches[this.branches.length - 1].leaf;
         }
-        this.branches.push(new Branch(this.distBetweenPoints, id, intro, mainCol, isByCurrentUser, prev));
+        this.branches.push(new Branch(this.distBetweenPoints, id, score, intro, mainCol, isByCurrentUser, prev));
     },
 
     delete: function() {
