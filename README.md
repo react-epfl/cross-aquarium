@@ -1,6 +1,6 @@
 # cross-aquarium
 
-There is still a lot of dynamic drawing involved (particularly on the seaweed), needs investigation for performances. Also a good cleanup of the code would be nice, right now it is just a mess.
+The overall performances (with a "regular" aquarium) are quite good, however things get tricky when there are a lot of objects involved (e.g.: the extrem case of MSF space). It might be related to the library (p5.js) I'm using, but switching to full canvas api would require much more time.
 
 ### Content
 ```
