@@ -7,7 +7,7 @@ var Rock = function(position, depth, angle, numPoint, shape, id, score, intro, i
     this.shape    = shape;
     this.algaes   = [];
     this.id       = id;
-    this.score     = score;
+    this.score    = typeof score !== 'undefined' ? score : 0;
     this.isByCurrentUser = isByCurrentUser;
 
     this.maxNumBranches = randomBetween(7, 12);

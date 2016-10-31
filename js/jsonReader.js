@@ -31,6 +31,7 @@ var readJSON = function(json, privacy) {
         last = (Date.now() - last) / 1000 / 60 / 60 / 24;
 
         var score = json.items[i].voteScore;
+        score = typeof score !== 'undefined' ? score : 0;
         if(minAge == -1) {
             minAge  = age;
             maxAge  = age;
