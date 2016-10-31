@@ -11,7 +11,7 @@ if(!zen) {
 }
 
 var physics,
-    step          = 0,
+    frame          = 0,
     rocks         = [],
     gems          = [],
     bubbles       = [],
@@ -122,7 +122,7 @@ function createHalo() {
     halo = createGraphics(100, 100);
     halo.scale(1 / pixelDensity());
     for(var i = 0; i < 40; i++) {
-        halo.fill(255, sin(Math.pow(i / 40, 10) + i / 40 / 10) * 255);
+        halo.fill(255, Math.sin(Math.pow(i / 40, 10) + i / 40 / 10) * 255);
         halo.noStroke();
         halo.ellipse(halo.width / 2, halo.height / 2, 100 - i * 2.5, 100 - i * 2.5);
     }
@@ -150,26 +150,26 @@ function createGradient() {
 
     bg.noStroke();
     for(var i = 0; i < horizon; i++) {
-        amount = map(i, 0, horizon, 0, 1);
+        amount = remap(i, 0, horizon, 0, 1);
         bg.fill(lerpColor(color1, color2, amount));
         bg.rect(0, i, bg.width, 1);
     }
 
     if(!zen) {
         for(var i = horizon; i < bg.height; i++) {
-            amount = constrain(map(i, horizon, bg.height - bg.height / 12, 0, 1), 0, 1);
+            amount = clamp(remap(i, horizon, bg.height - bg.height / 12, 0, 1), 0, 1);
             bg.fill(lerpColor(color2, color4, amount));
             bg.rect(0, i, bg.width, 1);
         }
     } else {
         for(var i = horizon; i < bottom; i++) {
-            amount = map(i, horizon, bottom, 0, 1);
+            amount = remap(i, horizon, bottom, 0, 1);
             bg.fill(lerpColor(color2, color3, amount));
             bg.rect(0, i, bg.width, 1);
         }
 
         for(var i = bottom; i < bg.height; i++) {
-            amount = constrain(map(i, bottom, bg.height - bg.height / 12, 0, 1), 0, 1);
+            amount = clamp(remap(i, bottom, bg.height - bg.height / 12, 0, 1), 0, 1);
             bg.fill(lerpColor(color3, color4, amount));
             bg.rect(0, i, bg.width, 1);
         }
@@ -178,7 +178,7 @@ function createGradient() {
     leftGradient = createGraphics(100, height);
     leftGradient.scale(1 / pixelDensity());
     for(var i = 0; i < leftGradient.width; i++) {
-        amount = map(i, 0, leftGradient.width, 255, 0);
+        amount = remap(i, 0, leftGradient.width, 255, 0);
         leftGradient.tint(255, amount);
         leftGradient.image(bg.get(), 0, 0, bg.width, bg.height, i, 0, 1, leftGradient.height);
     }
@@ -186,7 +186,7 @@ function createGradient() {
     rightGradient = createGraphics(100, height);
     rightGradient.scale(1 / pixelDensity());
     for(var i = 0; i < rightGradient.width; i++) {
-        amount = map(i, 0, rightGradient.width, 0, 255);
+        amount = remap(i, 0, rightGradient.width, 0, 255);
         rightGradient.tint(255, amount);
         rightGradient.image(bg.get(), 0, 0, bg.width, bg.height, i, 0, 1, rightGradient.height);
     }
@@ -194,7 +194,7 @@ function createGradient() {
     bottomGradient = createGraphics(width, height / 4);
     bottomGradient.scale(1 / pixelDensity());
     for(var i = 0; i < bottomGradient.height; i++) {
-        amount = constrain(map(i, 0, bottomGradient.height - height/12, 0, 1), 0, 1);
+        amount = clamp(remap(i, 0, bottomGradient.height - height/12, 0, 1), 0, 1);
         bottomGradient.stroke(lerpColor(color(currentColor.r, currentColor.g, currentColor.b, 0), color(currentColor.r, currentColor.g, currentColor.b, 255), amount));
         bottomGradient.line(0, i, bottomGradient.width, i);
     }
@@ -291,7 +291,7 @@ function createBubble() {
     bubble = createGraphics(bubbleImg.width/2, bubbleImg.height/2);
     bubble.scale(1 / pixelDensity());
     bubble.translate(bubble.width/2, bubble.height/2);
-    bubble.rotate(PI);
+    bubble.rotate(Math.PI);
     bubble.push();
     bubble.image(bubbleImg, -bubble.width/2, -bubble.height/2, bubble.width, bubble.height);
     bubble.pop();
@@ -299,7 +299,7 @@ function createBubble() {
     halfBubble = createGraphics(halfBubbleImg.width/2, halfBubbleImg.height/2);
     halfBubble.scale(1 / pixelDensity());
     halfBubble.translate(halfBubble.width/2, halfBubble.height/2);
-    halfBubble.rotate(PI);
+    halfBubble.rotate(Math.PI);
     halfBubble.push();
     halfBubble.image(halfBubbleImg, -halfBubble.width/2, -halfBubble.height/2, halfBubble.width, halfBubble.height);
     halfBubble.pop();
@@ -308,9 +308,10 @@ function createBubble() {
 function update() {
     physics.update();
 
-    if(displayTree.length > 0 && random() < .05) {
-        bubbles.push(new Bubble(new Vec2D(random(width/6, width - width/6), random(height - height/3, height - height/12))));
-        var rand = Math.floor(Math.random() * (displayTree.length - 1));
+    if(displayTree.length > 0 && Math.random() < .05) {
+        bubbles.push(new Bubble(new Vec2D(randomBetween(width/6, width - width/6), randomBetween(height - height/3, height - height/12))));
+        var rand = Math.floor(Math.random() * displayTree.length);
+        if(rand == displayTree.length) rand--;
         displayTree[rand].push(bubbles[bubbles.length - 1]);
     }
 
@@ -347,12 +348,7 @@ function update() {
         }
     }
 
-    // for(var i = 0, l = fishes.length; i < l; i++) {
-    //     fishes[i].step(fishes, flowfield);
-    //     if(t) fishes[i].seek(new Vec2D(touchX, touchY));
-    // }
-
-    step++;
+    frame++;
 }
 
 function draw() {
@@ -360,38 +356,35 @@ function draw() {
 
     image(bg, 0, 0, width, height);
 
-    if(intro && step - introBeginning <= 120) {
-        var offset = map(step - introBeginning, 0, 120, 3, 0);
-        translate(random(-offset, offset), random(-offset, offset));
-        if(step - introBeginning == 120) intro = false;
-    }
-
-    noFill();
-    stroke(255);
-    for(var i = 0, l = bubbles.length; i < l; i++) {
-        bubbles[i].display();
+    if(intro && frame - introBeginning <= 120) {
+        var offset = remap(frame - introBeginning, 0, 120, 3, 0);
+        translate(randomBetween(-offset, offset), randomBetween(-offset, offset));
+        if(frame - introBeginning == 120) intro = false;
     }
 
     for(var i = 0, l = rocks.length; i < l; i++) {
-        var s = map(i, 0, rocks.length - 1, .6, 1);
+        var s = remap(i, 0, rocks.length - 1, .6, 1),
+            offsetX = remap(mouseX, 0, width, width/3, 2 * width/3),
+            offsetY = remap(mouseY, 0, height, height/3, 2 * height/3);
 
-        rocks[i].display(s);
+        rocks[i].display(s, offsetX, offsetY);
         for(var j = 0, ll = displayTree[i].length; j < ll; j++) {
-            displayTree[i][j].display(s, fishes.length);
+            displayTree[i][j].display(s, offsetX, offsetY, fishes.length);
         }
 
         push();
-        translate(map(mouseX, 0, width, width/2 - width/4, width/2 + width/4), map(mouseY, 0, height, height/4, 3 * height/4));
+        translate(offsetX, offsetY);
         scale(s);
-        translate(-map(mouseX, 0, width, width/2 - width/4, width/2 + width/4), -map(mouseY, 0, height, height/4, 3 * height/4));
+        translate(-offsetX, -offsetY);
         if(debug) {
+            noFill();
             stroke(255);
             rect(0, 0, width, height);
         }
         image(bottomGradient, -(1 - s) * width * 1.5, height - bottomGradient.height, width + (1 - s) * width * 3, bottomGradient.height);
         fill(color(currentColor.r, currentColor.g, currentColor.b));
         noStroke();
-        rect(-(1 - s) * width * 1.5, height - 1, width + (1 - s) * width * 3, -(1 - s) * height * 1.5);
+        rect(-(1 - s) * width * 1.5, height - 2, width + (1 - s) * width * 3, (1 - s) * height * 1.5);
         pop();
     }
 

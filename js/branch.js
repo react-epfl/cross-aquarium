@@ -4,10 +4,8 @@ var Branch = function(distBetweenPoints, id, intro, col, isByCurrentUser, leaf) 
     this.springs           = [];
     this.leaf              = null;
     this.branches          = [];
-    this.isByCurrentUser          = isByCurrentUser;
-    // this.numChildren       = 0;
-
-    // this.rand = random(-10, 10);
+    this.isByCurrentUser   = isByCurrentUser;
+    this.score             = 0;
 
     if(!zen) {
         this.destMainCol = {r: col.r + 20, g: col.g + 20, b: col.b + 20};
@@ -37,7 +35,7 @@ Branch.prototype = {
         this.mainCol.b += (this.destMainCol.b - this.mainCol.b) * .025;
 
         if(this.branches.length > 0)
-            this.branches[this.branches.length - 1].leaf.addForce(new Vec2D(random(-.1, .1), 0));
+            this.branches[this.branches.length - 1].leaf.addForce(new Vec2D(randomBetween(-.1, .1), 0));
     },
 
     display: function(shape, iii, lll, displayLeaf) {
@@ -51,10 +49,10 @@ Branch.prototype = {
                 push();
                 var dir = this.springs[i].b.sub(this.springs[i].a);
                 translate(this.leaf.x, this.leaf.y);
-                rotate(dir.heading() - PI/2);
-                translate(zen ? 0 : iii % 2 == 0 ? this.leafW : -this.leafW, 0);
-                var factor = (Math.cos(-step * .1 + iii * (Math.PI / lll)) + 1) / 2;
+                rotate(dir.heading() + PI/2);
+                var factor = (Math.cos(-frame * .1 + iii * (Math.PI / lll)) + 1) / 2;
                 if(!zen) {
+                    translate(iii % 2 == 0 ? this.leafW : -this.leafW, 0);
                     fill(factor * (currentColor.r - this.mainCol.r) + this.mainCol.r,
                          factor * (currentColor.g - this.mainCol.g) + this.mainCol.g,
                          factor * (currentColor.b - this.mainCol.b) + this.mainCol.b);
@@ -66,19 +64,22 @@ Branch.prototype = {
                 noStroke();
                 beginShape();
                 if (shape == S_TRIANGLE) {
+                    if(!zen) {
+                        translate(iii % 2 == 0 ? -this.leafW / 5 : this.leafW / 5, 0);
+                    }
                     for(var i = 0; i < shape; i++) {
                         vertex(Math.cos(i * Math.PI * 2 / shape - Math.PI / 6) * this.leafW,
-                               Math.sin(i * Math.PI * 2 / shape - Math.PI / 6) * map(mouseY, 0, height, this.leafH, 2));
+                               Math.sin(i * Math.PI * 2 / shape - Math.PI / 6) * remap(mouseY, 0, height, this.leafH, 2));
                     }
                 } else {
                     for(var i = 0; i < shape; i++) {
                         vertex(Math.cos(i * Math.PI * 2 / shape) * this.leafW,
-                               Math.sin(i * Math.PI * 2 / shape) * map(mouseY, 0, height, this.leafH, 2));
+                               Math.sin(i * Math.PI * 2 / shape) * remap(mouseY, 0, height, this.leafH, 2));
                     }
                 }
                 endShape(CLOSE);
                 if(this.isByCurrentUser && isSessionPrivate) {
-                    scale((Math.cos(step * .25) + 1) / 2 * .1 + .5);
+                    scale((Math.cos(frame * .25) + 1) / 2 * .1 + .5);
                     image(bubble, -bubble.width / 2, -bubble.height / 2);
                 }
                 pop();
@@ -158,8 +159,13 @@ Branch.prototype = {
     deleteComment: function(commentId) {
         for(var i = 0, l = this.branches.length; i < l; i++) {
             if(this.branches[i].deleteComment(commentId)) {
-                if(i != l - 1) {
+                if(i != 0 && i != l - 1) {
                     this.branches[i + 1].springs[0].a = this.branches[i - 1].leaf;
+                }
+                if(i == 0) {
+                    this.branches[i + 1].springs[0].a.x = 0;
+                    this.branches[i + 1].springs[0].a.y = 0;
+                    this.branches[i + 1].lock();
                 }
                 var b = this.branches.splice(i, 1);
                 b = null;
@@ -177,6 +183,19 @@ Branch.prototype = {
                 s = null;
             }
             this.leaf = null;
+            return true;
+        }
+
+        return false;
+    },
+
+    changeCommentScore: function(comment) {
+        for(var i = 0, l = this.branches.length; i < l; i++) {
+            if(this.branches[i].deleteComment(commentId)) return true;
+        }
+
+        if(this.id == comment._id) {
+            comment.score = comment.voteScore;
             return true;
         }
 

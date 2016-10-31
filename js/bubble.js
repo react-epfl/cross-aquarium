@@ -6,16 +6,18 @@ var Bubble = function(position) {
 
 Bubble.prototype = {
     update: function() {
-        this.particle.addForce(new Vec2D(random(-.1, .1), .05));
+        this.particle.addForce(new Vec2D(randomBetween(-.1, .1), .05));
     },
 
-    display: function(s) {
+    display: function(s, offX, offY) {
         push();
-        translate(map(mouseX, 0, width, width/3, 2 * width/3), map(mouseY, 0, height, height/3, 2 * height/3));
+        translate(offX, offY);
         scale(s);
-        translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
+        translate(-offX, -offY);
         translate(this.particle.x, this.particle.y);
-        ellipse(0, 0, 1, 1);
+        noStroke();
+        fill(255);
+        ellipse(0, 0, 3, 3);
         pop();
     },
 

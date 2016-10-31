@@ -11,7 +11,7 @@ var Fish = function(position, maxSpeed, maxForce, body, tail, id, isByCurrentUse
     this.tail         = tail;
     this.id           = id;
     this.theta        = 0;
-    this.life         = random(1000);
+    this.life         = Math.random() * 1000;
     this.isByCurrentUser = isByCurrentUser;
 }
 
@@ -31,8 +31,8 @@ Fish.prototype = {
             wan = this.wander();
 
         sep.scaleSelf(2.0);
-        ali.scaleSelf(((Math.cos(step * .01) + 1) / 2));
-        coh.scaleSelf(((Math.cos(step * .01) + 1) / 2));
+        ali.scaleSelf(((Math.cos(frame * .01) + 1) / 2));
+        coh.scaleSelf(((Math.cos(frame * .01) + 1) / 2));
         fol.scaleSelf(0.5);
         wan.scaleSelf(0.75);
 
@@ -67,7 +67,7 @@ Fish.prototype = {
         var wanderR = 25;
         var wanderD = 80;
         var change  = .3;
-        this.theta += random(-change,change);
+        this.theta += randomBetween(-change, change);
 
         var target = this.velocity.copy();
         target.normalize();
@@ -76,7 +76,7 @@ Fish.prototype = {
 
         var h = this.velocity.heading();
 
-        var offset = new Vec2D(wanderR * cos(this.theta + h), wanderR * sin(this.theta + h));
+        var offset = new Vec2D(wanderR * Math.cos(this.theta + h), wanderR * Math.sin(this.theta + h));
         target.addSelf(offset);
 
         return this.steer(target, false);
@@ -231,20 +231,20 @@ Fish.prototype = {
         return sum;
     },
 
-    display: function(s, n) {
+    display: function(s, offX, offY, n) {
         push();
-        translate(map(mouseX, 0, width, width/3, 2 * width/3), map(mouseY, 0, height, height/3, 2 * height/3));
+        translate(offX, offY);
         scale(s);
-        translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
+        translate(-offX, -offY);
         translate(this.position.x, this.position.y);
         rotate(this.angle);
-        scale(constrain(map(n, 0, 200, .7, .4), .4, .7));
-        push();
+        scale(clamp(remap(n, 0, 200, .7, .4), .4, .7));
+        var speed = remap(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10);
         switch(this.body) {
             case 0:
                 push();
                 translate(fishBodies[this.body].width / 8, fishBodies[this.body].height / 4);
-                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/3);
+                rotate(Math.cos(this.life * 1) * PI / speed - PI/3);
                 scale(.7);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
@@ -254,7 +254,7 @@ Fish.prototype = {
                 pop();
                 push();
                 translate(fishBodies[this.body].width / 8, -fishBodies[this.body].height / 4);
-                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/3);
+                rotate(Math.sin(this.life * 1) * PI / speed + PI/3);
                 scale(.7);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
@@ -267,7 +267,7 @@ Fish.prototype = {
             case 1:
                 push();
                 translate(0, fishBodies[this.body].height / 4);
-                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/3);
+                rotate(Math.cos(this.life * 1) * PI / speed - PI/3);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -276,7 +276,7 @@ Fish.prototype = {
                 pop();
                 push();
                 translate(0, -fishBodies[this.body].height / 4);
-                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/3);
+                rotate(Math.sin(this.life * 1) * PI / speed + PI/3);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -287,7 +287,7 @@ Fish.prototype = {
 
             case 2:
                 push();
-                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
+                rotate(Math.cos(this.life * 1) * PI / speed);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -299,7 +299,7 @@ Fish.prototype = {
             case 3:
                 push();
                 translate(fishBodies[this.body].width / 12, fishBodies[this.body].height / 4);
-                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/10);
+                rotate(Math.cos(this.life * 1) * PI / speed - PI/10);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -308,7 +308,7 @@ Fish.prototype = {
                 pop();
                 push();
                 translate(fishBodies[this.body].width / 12, -fishBodies[this.body].height / 4);
-                rotate(-cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/10);
+                rotate(-Math.cos(this.life * 1) * PI / speed + PI/10);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -317,7 +317,7 @@ Fish.prototype = {
                 pop();
                 push();
                 translate(-fishBodies[this.body].width / 2, 0);
-                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
+                rotate(Math.sin(this.life * 1) * PI / speed);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -329,7 +329,7 @@ Fish.prototype = {
             case 4:
                 push();
                 translate(-fishBodies[this.body].width / 12, fishBodies[this.body].height / 2.8);
-                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/10);
+                rotate(Math.cos(this.life * 1) * PI / speed - PI/10);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -338,7 +338,7 @@ Fish.prototype = {
                 pop();
                 push();
                 translate(-fishBodies[this.body].width / 12, -fishBodies[this.body].height / 2.8);
-                rotate(-cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/10);
+                rotate(-Math.cos(this.life * 1) * PI / speed + PI/10);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -347,7 +347,7 @@ Fish.prototype = {
                 pop();
                 push();
                 translate(-fishBodies[this.body].width / 2, 0);
-                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
+                rotate(Math.sin(this.life * 1) * PI / speed);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -359,7 +359,7 @@ Fish.prototype = {
             case 5:
                 push();
                 translate(-fishBodies[this.body].width / 12, fishBodies[this.body].height / 2.8);
-                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/5);
+                rotate(Math.cos(this.life * 1) * PI / speed - PI/5);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -368,7 +368,7 @@ Fish.prototype = {
                 pop();
                 push();
                 translate(-fishBodies[this.body].width / 12, -fishBodies[this.body].height / 2.8);
-                rotate(-cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/5);
+                rotate(-Math.cos(this.life * 1) * PI / speed + PI/5);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -377,7 +377,7 @@ Fish.prototype = {
                 pop();
                 push();
                 translate(-fishBodies[this.body].width / 2, 0);
-                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
+                rotate(Math.sin(this.life * 1) * PI / speed);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -389,7 +389,7 @@ Fish.prototype = {
             case 6:
                 push();
                 translate(fishBodies[this.body].width / 12, fishBodies[this.body].height / 2);
-                rotate(cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) - PI/5);
+                rotate(Math.cos(this.life * 1) * PI / speed - PI/5);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -398,7 +398,7 @@ Fish.prototype = {
                 pop();
                 push();
                 translate(fishBodies[this.body].width / 12, -fishBodies[this.body].height / 2);
-                rotate(-cos(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10) + PI/5);
+                rotate(-Math.cos(this.life * 1) * PI / speed + PI/5);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -407,7 +407,7 @@ Fish.prototype = {
                 pop();
                 push();
                 translate(-fishBodies[this.body].width / 2, 0);
-                rotate(sin(this.life * 1) * PI / map(this.velocity.magnitude(), 0, this.maxSpeed, 100, 10));
+                rotate(Math.sin(this.life * 1) * PI / speed);
                 if(!zen) {
                     image(fishTails[this.tail], -fishTails[this.tail].width, -fishTails[this.tail].height / 2);
                 } else {
@@ -416,16 +416,11 @@ Fish.prototype = {
                 pop();
                 break;
         }
-        pop();
         image(fishBodies[this.body], -fishBodies[this.body].width / 2, -fishBodies[this.body].height / 2);
         if(this.isByCurrentUser && isSessionPrivate) {
-            scale((Math.cos(step * .25) + 1) / 2 * .1 + .9);
+            scale((Math.cos(frame * .25) + 1) / 2 * .1 + .9);
             image(bubble, -bubble.width / 2, -bubble.height / 2);
         }
         pop();
-    },
-
-    delete: function() {
-
     }
 }

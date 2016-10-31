@@ -1,15 +1,15 @@
-var Algae = function(position, distBetweenPoints, shape, col) {
+var Algae = function(position, offset, distBetweenPoints, shape, col) {
     this.position          = position;
     this.distBetweenPoints = distBetweenPoints;
     this.shape             = shape;
     this.mainCol           = col;
     this.branches          = [];
     this.scale             = 0;
-    this.randTheta         = random(-PI, PI);
-    this.randDist          = random(0, 1);
+    this.randTheta         = randomBetween(-PI, PI);
+    this.randDist          = randomBetween(0, 1);
 
-    this.offset            = new Vec2D(cos(this.randTheta) * this.randDist * 60,
-                                       sin(this.randTheta) * this.randDist * 12);
+    this.offset            = new Vec2D(Math.cos(this.randTheta) * this.randDist * offset / 2,
+                                       Math.sin(this.randTheta) * this.randDist * offset / 2 / 5);
 
     // this.addLeaf();
 }
@@ -21,7 +21,7 @@ Algae.prototype = {
             for(var i = 0, l = this.branches.length; i < l; i++) {
                 this.branches[i].update();
                 if(i == l - 1)
-                    this.branches[i].leaf.addForce(new Vec2D(random(-.1, .1), 0));
+                    this.branches[i].leaf.addForce(new Vec2D(randomBetween(-.1, .1), 0));
             }
         }
     },
@@ -29,7 +29,7 @@ Algae.prototype = {
     display: function(angle) {
         push();
         var x = this.position.x + this.offset.x,
-            y = this.position.y + this.offset.y * map(mouseY, 0, height, 1, 0);
+            y = this.position.y + this.offset.y * remap(mouseY, 0, height, 1, 0);
         translate(Math.cos(angle) * x - Math.sin(angle) * y,
                   Math.sin(angle) * x + Math.cos(angle) * y);
         scale(this.scale);
@@ -71,13 +71,25 @@ Algae.prototype = {
     deleteComment: function(commentId) {
         for(var i = 0, l = this.branches.length; i < l; i++) {
             if(this.branches[i].deleteComment(commentId)) {
-                if(i != l - 1) {
+                if(i != 0 && i != l - 1) {
                     this.branches[i + 1].springs[0].a = this.branches[i - 1].leaf;
+                }
+                if(i == 0) {
+                    this.branches[i + 1].springs[0].a.x = 0;
+                    this.branches[i + 1].springs[0].a.y = 0;
+                    this.branches[i + 1].springs[0].a.lock();
                 }
                 var b = this.branches.splice(i, 1);
                 b = null;
                 return true;
             }
+        }
+        return false;
+    },
+
+    changeCommentScore: function(comment) {
+        for(var i = 0, l = this.branches.length; i < l; i++) {
+            if(this.branches[i].changeCommentScore(commentId)) return true;
         }
         return false;
     }

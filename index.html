@@ -129,7 +129,7 @@
                     reader.addEventListener('load', function(e) {
                         readJSON(JSON.parse(e.target.result));
                         intro = true;
-                        introBeginning = step;
+                        introBeginning = frame;
                         uploadJSON.disabled = true;
                     }, false);
                 } else {

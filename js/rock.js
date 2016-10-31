@@ -1,4 +1,4 @@
-var Rock = function(position, depth, angle, numPoint, shape, id, intro, isByCurrentUser) {
+var Rock = function(position, depth, angle, numPoint, shape, id, score, intro, isByCurrentUser) {
     this.position = position;
     this.depth    = 0;
     this.newDepth = depth;
@@ -7,9 +7,10 @@ var Rock = function(position, depth, angle, numPoint, shape, id, intro, isByCurr
     this.shape    = shape;
     this.algaes   = [];
     this.id       = id;
+    this.score     = score;
     this.isByCurrentUser = isByCurrentUser;
 
-    this.maxNumBranches = random(7, 12);
+    this.maxNumBranches = randomBetween(7, 12);
 
     if(!zen) {
         if(this.numPoint == S_TRIANGLE) {
@@ -56,25 +57,25 @@ Rock.prototype = {
         }
     },
 
-    display: function(s) {
+    display: function(s, offX, offY) {
         push();
-        translate(map(mouseX, 0, width, width/3, 2 * width/3), map(mouseY, 0, height, height/3, 2 * height/3));
+        translate(offX, offY);
         scale(s);
-        translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
+        translate(-offX, -offY);
         translate(this.position.x, this.position.y);
         fill(this.mainCol.r, this.mainCol.g, this.mainCol.b);
         noStroke();
         beginShape();
-        var scaleY = this.angle == Math.PI / 2 ? 24 : map(mouseY, 0, height, 24, 2);
-        var offsetAngle = this.angle == Math.PI / 2 ? Math.PI / 8 : 0;
+        var scaleX = remap(this.score, 0, maxScore, 100, 180);
+        var scaleY = this.angle == Math.PI / 2 ? scaleX / 5 : remap(mouseY, 0, height, scaleX / 5, 2);
         if(this.numPoint == S_TRIANGLE) {
             for(var i = 0; i < this.numPoint; i++) {
-                vertex(Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 120,
+                vertex(Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * scaleX,
                        Math.sin(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * scaleY);
             }
             for(var i = this.numPoint - 1; i >= 0; i--) {
                 if(i != 1) {
-                    var x = Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 120,
+                    var x = Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * scaleX,
                         y = Math.sin(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * scaleY - this.depth;
                     vertex(Math.cos(this.angle) * x - Math.sin(this.angle) * y,
                            Math.sin(this.angle) * x + Math.cos(this.angle) * y);
@@ -82,11 +83,11 @@ Rock.prototype = {
             }
         } else {
             for(var i = 0; i < this.numPoint / 2 + 1; i++) {
-                vertex(Math.cos(i * Math.PI * 2 / this.numPoint) * 120,
+                vertex(Math.cos(i * Math.PI * 2 / this.numPoint) * scaleX,
                        Math.sin(i * Math.PI * 2 / this.numPoint) * scaleY);
             }
             for(var i = this.numPoint / 2; i < this.numPoint + 1; i++) {
-                var x = Math.cos(i * Math.PI * 2 / this.numPoint) * 120,
+                var x = Math.cos(i * Math.PI * 2 / this.numPoint) * scaleX,
                     y = Math.sin(i * Math.PI * 2 / this.numPoint) * scaleY - this.depth;
                 vertex(Math.cos(this.angle) * x - Math.sin(this.angle) * y,
                        Math.sin(this.angle) * x + Math.cos(this.angle) * y);
@@ -101,24 +102,24 @@ Rock.prototype = {
         beginShape();
         if (this.numPoint == S_TRIANGLE) {
             for(var i = 0; i < this.numPoint; i++) {
-                vertex(Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * 120,
+                vertex(Math.cos(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * scaleX,
                        Math.sin(i * Math.PI * 2 / this.numPoint - Math.PI / 6) * scaleY);
             }
         } else {
             for(var i = 0; i < this.numPoint; i++) {
-                vertex(Math.cos(i * Math.PI * 2 / this.numPoint) * 120,
+                vertex(Math.cos(i * Math.PI * 2 / this.numPoint) * scaleX,
                        Math.sin(i * Math.PI * 2 / this.numPoint) * scaleY);
             }
         }
         endShape(CLOSE);
         if(debug) {
             stroke(255);
-            ellipse(0, 0, 120, map(mouseY, 0, height, 24, 2));
+            ellipse(0, 0, scaleX, scaleY);
             noStroke();
         }
 
         if(this.isByCurrentUser && isSessionPrivate) {
-            scale((Math.cos(step * .25) + 1) / 2 * .05 + .85);
+            scale((Math.cos(frame * .25) + 1) / 2 * .05 + .85);
             rotate(Math.PI);
             image(halfBubble, -halfBubble.width / 2, -halfBubble.height / 6);
         }
@@ -133,7 +134,7 @@ Rock.prototype = {
     },
 
     addAlgae: function() {
-        var a = new Algae(new Vec2D(0, -this.newDepth), 30, this.numPoint, this.destMainCol);
+        var a = new Algae(new Vec2D(0, -this.newDepth), remap(this.score, 0, maxScore, 100, 180), 30, this.numPoint, this.destMainCol);
         for(var i = 0, l = this.algaes.length; i < l; i++) {
             if(a.offset.y < this.algaes[i].offset.y) {
                 this.algaes.splice(i, 0, a);
@@ -163,7 +164,7 @@ Rock.prototype = {
                 }
             }
             this.algaes[this.addAlgae()].addBranch(id, intro, isByCurrentUser, fromId);
-            this.maxNumBranches = random(7, 12);
+            this.maxNumBranches = randomBetween(7, 12);
         }
     },
 
@@ -176,6 +177,13 @@ Rock.prototype = {
     deleteComment: function(commentId) {
         for(var i = 0, l = this.algaes.length; i < l; i++) {
             if(this.algaes[i].deleteComment(commentId)) return true;
+        }
+        return false;
+    },
+
+    changeCommentScore: function(comment) {
+        for(var i = 0, l = this.algaes.length; i < l; i++) {
+            if(this.algaes[i].changeCommentScore(comment)) return true;
         }
         return false;
     }

@@ -3,6 +3,7 @@ var json,
     maxAge  = -1,
     minLast = -1,
     maxLast = -1,
+    maxScore = -1,
     spaceTree = document.getElementById('spaceTree'),
     spaceName = document.getElementById('spaceName'),
     spaceInc  = 0,
@@ -29,16 +30,19 @@ var readJSON = function(json, privacy) {
         last = last.getTime();
         last = (Date.now() - last) / 1000 / 60 / 60 / 24;
 
+        var score = json.items[i].voteScore;
         if(minAge == -1) {
             minAge  = age;
             maxAge  = age;
             minLast = last;
             maxLast = last;
+            maxScore = score;
         } else {
             if(age < minAge) minAge = age;
             else if(age > maxAge) maxAge = age;
             if(last < minLast) minLast = last;
             else if(last > maxLast) maxLast = last;
+            if(score > maxScore) maxScore = score;
         }
     }
 
@@ -51,7 +55,7 @@ var readJSON = function(json, privacy) {
     }
 
     for(var i = 0, l = json.members.length; i < l; i++) {
-        if(fishes.length < 200) addMember(json.members[i], true);
+        if(fishes.length < 150) addMember(json.members[i], true);
     }
 }
 
@@ -101,13 +105,12 @@ var addItem = function(item, intro) {
             last = new Date(item.modified);
             last = last.getTime();
             last = (Date.now() - last) / 1000 / 60 / 60 / 24;
-            console.log(last);
         }
 
         rocks.push(new Rock(new Vec2D(random(0, width), height - height/12),
                             constrain(map(age, minAge, maxAge, height/6, height/1.5), height/6, height/1.5),
                             (last > 368 ? PI/2 : constrain(map(last, minLast, maxLast, 0, PI/8), 0, PI/8)) * (random() < .5 ? -1 : 1),
-                            shape, shapes[type], item._id, intro, typeof item.createdByCurrentUser !== 'undefined'));
+                            shape, shapes[type], item._id, item.voteScore, intro, typeof item.createdByCurrentUser !== 'undefined'));
         rocks[rocks.length - 1].addAlgae();
 
         if(typeof item.comments !== 'undefined') {
@@ -225,4 +228,18 @@ var deleteMember = function(member) {
     }
 
     deletedMember = null;
+}
+
+var changeScore = function(item) {
+    for(var i = 0, l = rocks.length; i < l; i++) {
+        if(rocks[i].id == item._id) {
+            rocks[i].score = item.voteScore;
+            if(item.voteScore > maxScore) maxScore = item.voteScore;
+            return
+        }
+    }
+
+    for(var i = 0, l = rocks.length; i < l; i++) {
+        if(rocks[i].changeCommentScore(item)) return;
+    }
 }

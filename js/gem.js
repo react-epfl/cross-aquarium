@@ -54,14 +54,14 @@ Gem.prototype = {
     update: function() {
         this.depth += (this.newDepth - this.depth) * .05;
         this.scale += (1 - this.scale) * .025;
-        this.gem.addForce(new Vec2D(random(-.1, .1), 0));
+        this.gem.addForce(new Vec2D(randomBetween(-.1, .1), 0));
     },
 
-    display: function(s) {
+    display: function(s, offX, offY) {
         push();
-        translate(map(mouseX, 0, width, width/3, 2 * width/3), map(mouseY, 0, height, height/3, 2 * height/3));
+        translate(offX, offY);
         scale(s);
-        translate(-map(mouseX, 0, width, width/3, 2 * width/3), -map(mouseY, 0, height, height/3, 2 * height/3));
+        translate(-offX, -offY);
         translate(this.position.x, this.position.y);
         scale(this.scale);
         for(var i = 0, l = this.springs.length; i < l; i++) {
@@ -87,21 +87,21 @@ Gem.prototype = {
                 beginShape();
                 for(var i = this.max + 1; i <= this.min - 1; i++) {
                     vertex(Math.cos(i * Math.PI * 2 / 5 + this.rand) * 10,
-                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * map(mouseY, 0, height, 4, 2) + this.depth / 2.5);
+                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * remap(mouseY, 0, height, 4, 2) + this.depth / 2.5);
                 }
                 for(var i = this.min; i <= 5 + this.max; i++) {
                     vertex(Math.cos(i * Math.PI * 2 / 5 + this.rand) * 20,
-                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * map(mouseY, 0, height, 6, 2));
+                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * remap(mouseY, 0, height, 6, 2));
                 }
                 endShape(CLOSE);
                 beginShape();
                 for(var i = this.max; i <= this.min; i++) {
                     vertex(Math.cos(i * Math.PI * 2 / 5 + this.rand) * 20,
-                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * map(mouseY, 0, height, 6, 2));
+                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * remap(mouseY, 0, height, 6, 2));
                 }
                 for(var i = this.min; i <= 5 + this.max; i++) {
                     vertex(Math.cos(i * Math.PI * 2 / 5 + this.rand) * 10,
-                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * map(mouseY, 0, height, 4, 2) - this.depth / 2.5);
+                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * remap(mouseY, 0, height, 4, 2) - this.depth / 2.5);
                 }
                 endShape(CLOSE);
                 noFill();
@@ -113,7 +113,7 @@ Gem.prototype = {
                 beginShape();
                 for(var i = this.max; i <= this.min; i++) {
                     vertex(Math.cos(i * Math.PI * 2 / 5 + this.rand) * 20,
-                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * map(mouseY, 0, height, 6, 2));
+                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * remap(mouseY, 0, height, 6, 2));
                 }
                 endShape();
                 if(!zen) {
@@ -125,7 +125,7 @@ Gem.prototype = {
                 beginShape();
                 for(var i = 0; i < 5; i++) {
                     vertex(Math.cos(i * Math.PI * 2 / 5 + this.rand) * 10,
-                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * map(mouseY, 0, height, 4, 2) - this.depth / 2.5);
+                           Math.sin(i * Math.PI * 2 / 5 + this.rand) * remap(mouseY, 0, height, 4, 2) - this.depth / 2.5);
                 }
                 endShape(CLOSE);
                 pop();

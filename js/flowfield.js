@@ -20,7 +20,7 @@ Flowfield.prototype = {
         for(var i = 0; i < this.cols; i++) {
             var yoff = 0.0;
             for(var j = 0; j < this.rows; j++) {
-                var theta = map(simplexNoise.noise(xoff, yoff, this.zoff), 0, 1, 0, Math.PI * 2);
+                var theta = remap(simplexNoise.noise(xoff, yoff, this.zoff), 0, 1, 0, Math.PI * 2);
                 this.field[i][j] = Vec2D.fromTheta(theta);
                 yoff += 0.05;
             }
@@ -51,8 +51,8 @@ Flowfield.prototype = {
     },
 
     lookup: function(v) {
-        var col = Math.floor(constrain(v.x / this.resolution, 0, this.cols - 1));
-        var row = Math.floor(constrain(v.y / this.resolution, 0, this.rows - 1));
+        var col = Math.floor(clamp(v.x / this.resolution, 0, this.cols - 1));
+        var row = Math.floor(clamp(v.y / this.resolution, 0, this.rows - 1));
         var vec;
         if(typeof this.field[col][row] == 'undefined') {
             vec = new Vec2D(0, 0);
