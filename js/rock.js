@@ -145,12 +145,12 @@ Rock.prototype = {
         return this.algaes.length - 1;
     },
 
-    addBranch: function(id, intro, isByCurrentUser, fromId) {
+    addBranch: function(id, score, intro, isByCurrentUser, fromId) {
         if(typeof fromId !== 'undefined') {
             for(var i = 0, l = this.algaes.length; i < l; i++) {
                 for(var j = 0, ll = this.algaes[i].branches.length; j < ll; j++) {
                     if(this.algaes[i].branches[j].id == fromId) {
-                        this.algaes[i].addBranch(id, intro, isByCurrentUser, fromId);
+                        this.algaes[i].addBranch(id, score, intro, isByCurrentUser, fromId);
                         return;
                     }
                 }
@@ -159,11 +159,11 @@ Rock.prototype = {
         } else {
             for(var i = 0, l = this.algaes.length; i < l; i++) {
                 if(this.algaes[i].branches.length < this.maxNumBranches) {
-                    this.algaes[i].addBranch(id, intro, isByCurrentUser, fromId);
+                    this.algaes[i].addBranch(id, score, intro, isByCurrentUser, fromId);
                     return;
                 }
             }
-            this.algaes[this.addAlgae()].addBranch(id, intro, isByCurrentUser, fromId);
+            this.algaes[this.addAlgae()].addBranch(id, score, intro, isByCurrentUser, fromId);
             this.maxNumBranches = randomBetween(7, 12);
         }
     },

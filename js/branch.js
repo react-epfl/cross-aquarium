@@ -1,11 +1,11 @@
-var Branch = function(distBetweenPoints, id, intro, col, isByCurrentUser, leaf) {
+var Branch = function(distBetweenPoints, id, score, intro, col, isByCurrentUser, leaf) {
     this.distBetweenPoints = distBetweenPoints;
     this.id                = id;
     this.springs           = [];
     this.leaf              = null;
     this.branches          = [];
     this.isByCurrentUser   = isByCurrentUser;
-    this.score             = 0;
+    this.score             = score;
 
     if(!zen) {
         this.destMainCol = {r: col.r + 20, g: col.g + 20, b: col.b + 20};

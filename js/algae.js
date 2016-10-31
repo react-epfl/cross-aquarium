@@ -39,12 +39,12 @@ Algae.prototype = {
         pop();
     },
 
-    addBranch: function(id, intro, isByUser, fromId) {
+    addBranch: function(id, score, intro, isByUser, fromId) {
         if(this.branches.length == 0) {
-            this.branches.push(new Branch(this.distBetweenPoints, id, intro, this.mainCol, isByUser));
+            this.branches.push(new Branch(this.distBetweenPoints, id, score, intro, this.mainCol, isByUser));
             this.branches[0].createLeaf(true);
         } else if(typeof fromId === 'undefined') {
-            this.branches.push(new Branch(this.distBetweenPoints, id, intro, this.mainCol, isByUser, this.branches[this.branches.length - 1].leaf));
+            this.branches.push(new Branch(this.distBetweenPoints, id, score, intro, this.mainCol, isByUser, this.branches[this.branches.length - 1].leaf));
             if(this.branches[this.branches.length - 2].branches.length > 0) {
                 var spring = new VerletSpring2D(this.branches[this.branches.length - 1].leaf,
                                                 this.branches[this.branches.length - 2].branches[0].leaf,
@@ -54,7 +54,7 @@ Algae.prototype = {
         } else {
             for(var i = 0, l = this.branches.length; i < l; i++) {
                 if(this.branches[i].id == fromId) {
-                    this.branches[i].addLeaf(id, intro, this.mainCol, isByUser);
+                    this.branches[i].addLeaf(id, score, intro, this.mainCol, isByUser);
                     return;
                 }
             }

@@ -172,15 +172,15 @@ var deleteItem = function(item) {
 var addComment = function(comment, itemId) {
     for(var i = 0, l = rocks.length; i < l; i++) {
         if(typeof itemId !== 'undefined' && rocks[i].id == itemId) {
-            rocks[i].addBranch(comment._id, true, typeof comment.createdByCurrentUser !== 'undefined');
+            rocks[i].addBranch(comment._id, comment.voteScore, true, typeof comment.createdByCurrentUser !== 'undefined');
             if(typeof comment.replies !== 'undefined') {
                 for(var j = 0, ll = comment.replies.length; j < ll; j++) {
-                    rocks[i].addBranch(comment.replies[j]._id, true, typeof comment.createdByCurrentUser !== 'undefined', comment._id);
+                    rocks[i].addBranch(comment.replies[j]._id, comment.replies[j].voteScore, true, typeof comment.createdByCurrentUser !== 'undefined', comment._id);
                 }
             }
             return;
         } else if(rocks[i].id == comment.itemId) {
-            rocks[i].addBranch(comment._id, false, typeof comment.createdByCurrentUser !== 'undefined', comment.parentCommentId);
+            rocks[i].addBranch(comment._id, comment.voteScore, false, typeof comment.createdByCurrentUser !== 'undefined', comment.parentCommentId);
             return;
         }
     }
