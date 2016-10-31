@@ -118,6 +118,7 @@ a {
     color: white;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     overflow: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
     #panel h1 {
