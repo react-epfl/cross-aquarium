@@ -50,6 +50,7 @@ Branch.prototype = {
                 var dir = this.springs[i].b.sub(this.springs[i].a);
                 translate(this.leaf.x, this.leaf.y);
                 rotate(dir.heading() + PI/2);
+                scale(clamp(remap(this.score, -5, 5, .75, 1.5), .75, 1.5));
                 var factor = (Math.cos(-frame * .1 + iii * (Math.PI / lll)) + 1) / 2;
                 if(!zen) {
                     translate(iii % 2 == 0 ? this.leafW : -this.leafW, 0);
@@ -63,18 +64,19 @@ Branch.prototype = {
                 }
                 noStroke();
                 beginShape();
+                var scaleY = remap(mouseY, 0, height, this.leafH, 2);
                 if (shape == S_TRIANGLE) {
                     if(!zen) {
-                        translate(iii % 2 == 0 ? -this.leafW / 5 : this.leafW / 5, 0);
+                        translate(iii % 2 == 0 ? -this.leafW / 5 : this.leafW / 5, scaleY / 3);
                     }
                     for(var i = 0; i < shape; i++) {
                         vertex(Math.cos(i * Math.PI * 2 / shape - Math.PI / 6) * this.leafW,
-                               Math.sin(i * Math.PI * 2 / shape - Math.PI / 6) * remap(mouseY, 0, height, this.leafH, 2));
+                               Math.sin(i * Math.PI * 2 / shape - Math.PI / 6) * scaleY);
                     }
                 } else {
                     for(var i = 0; i < shape; i++) {
                         vertex(Math.cos(i * Math.PI * 2 / shape) * this.leafW,
-                               Math.sin(i * Math.PI * 2 / shape) * remap(mouseY, 0, height, this.leafH, 2));
+                               Math.sin(i * Math.PI * 2 / shape) * scaleY);
                     }
                 }
                 endShape(CLOSE);
