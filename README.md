@@ -7,7 +7,7 @@ There is still a lot of dynamic drawing involved (particularly on the seaweed), 
 p5.js         drawing library
 
 toxiclibs.js  particles/springs utils library
-↳ utils.js      pointers to toxiclibs core functions
+↳ utils.js      pointers to toxiclibs core functions + custom maths functions
 ```
 
 ```
