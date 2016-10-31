@@ -87,12 +87,12 @@
         <script src="js/utils.js"></script>
         <script src="js/jsonReader.js"></script>
         <script>
+            var canTouch = true;
             document.body.addEventListener('touchmove', function(e) {
-                e.preventDefault();
+                if(canTouch) e.preventDefault();
             }, false);
 
             var zen = false;
-            var canTouch = true;
             var isSessionPrivate = true;
 
             var switchToZenWorld = document.getElementById('switchToZenWorld'),
