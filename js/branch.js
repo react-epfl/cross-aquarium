@@ -5,7 +5,7 @@ var Branch = function(distBetweenPoints, id, score, intro, col, isByCurrentUser,
     this.leaf              = null;
     this.branches          = [];
     this.isByCurrentUser   = isByCurrentUser;
-    this.score             = score;
+    this.score             = typeof score !== 'undefined' ? score : 0;
 
     if(!zen) {
         this.destMainCol = {r: col.r + 20, g: col.g + 20, b: col.b + 20};
