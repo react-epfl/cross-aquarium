@@ -389,7 +389,7 @@ function draw() {
     }
 
 
-    if(touchIsDown) {
+    if(touchIsDown && canTouch) {
         image(halo, touchX - halo.width/2, touchY - halo.height/2);
     }
 

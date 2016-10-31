@@ -80,7 +80,7 @@
                 <img data-src="private" />
             </div>
         </div>
-        <div id="openPanel" onclick="document.getElementById('panel').classList.toggle('active')"></div>
+        <div id="openPanel" onclick="document.getElementById('panel').classList.toggle('active'); canTouch = !canTouch;"></div>
         <div id="canvas"></div>
         <script src="js/p5.min.js"></script>
         <script src="js/toxiclibs.min.js"></script>
@@ -92,6 +92,8 @@
             }, false);
 
             var zen = false;
+            var canTouch = true;
+            var isSessionPrivate = true;
 
             var switchToZenWorld = document.getElementById('switchToZenWorld'),
                 switchToPopWorld = document.getElementById('switchToPopWorld'),
