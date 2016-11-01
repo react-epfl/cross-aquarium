@@ -50,7 +50,7 @@ Branch.prototype = {
                 var dir = this.springs[i].b.sub(this.springs[i].a);
                 translate(this.leaf.x, this.leaf.y);
                 rotate(dir.heading() + PI/2);
-                scale(clamp(remap(this.score, -5, 5, .75, 1.5), .75, 1.5));
+                scale(clamp(remap(this.score, minScoreComment, maxScoreComment, .5, 1.5), .5, 1.5));
                 var factor = (Math.cos(-frame * .1 + iii * (Math.PI / lll)) + 1) / 2;
                 if(!zen) {
                     translate(iii % 2 == 0 ? this.leafW : -this.leafW, 0);

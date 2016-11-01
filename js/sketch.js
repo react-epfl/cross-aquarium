@@ -114,7 +114,7 @@ function setup() {
     strokeWeight(2);
 
     if(app.aquariumData) {
-        readJSON(app.aquariumData);
+        readJSON(app.aquariumData, true);
     }
 }
 
@@ -381,10 +381,10 @@ function draw() {
             stroke(255);
             rect(0, 0, width, height);
         }
-        image(bottomGradient, -(1 - s) * width * 1.5, height - bottomGradient.height, width + (1 - s) * width * 3, bottomGradient.height);
+        image(bottomGradient, -(1 - s) * width * 1.5, height - height/12 - bottomGradient.height, width + (1 - s) * width * 3, bottomGradient.height);
         fill(color(currentColor.r, currentColor.g, currentColor.b));
         noStroke();
-        rect(-(1 - s) * width * 1.5, height - 2, width + (1 - s) * width * 3, (1 - s) * height * 1.5);
+        rect(-(1 - s) * width * 1.5, height - height/12 - 2, width + (1 - s) * width * 3, height);
         pop();
     }
 

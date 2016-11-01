@@ -93,7 +93,6 @@
             }, false);
 
             var zen = false;
-            var isSessionPrivate = true;
 
             var switchToZenWorld = document.getElementById('switchToZenWorld'),
                 switchToPopWorld = document.getElementById('switchToPopWorld'),
@@ -129,7 +128,7 @@
                     var reader = new FileReader();
                     reader.readAsText(file, "UTF-8");
                     reader.addEventListener('load', function(e) {
-                        readJSON(JSON.parse(e.target.result));
+                        readJSON(JSON.parse(e.target.result), true);
                         intro = true;
                         introBeginning = frame;
                         uploadJSON.disabled = true;

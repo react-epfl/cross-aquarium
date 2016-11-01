@@ -119,7 +119,7 @@ Rock.prototype = {
         }
 
         if(this.isByCurrentUser && isSessionPrivate) {
-            scale((Math.cos(frame * .25) + 1) / 2 * .05 + .85);
+            scale((Math.cos(frame * .25) + 1) / 2 * .05 + .75 * remap(this.score, 0, maxScore, 1, 1.8));
             rotate(Math.PI);
             image(halfBubble, -halfBubble.width / 2, -halfBubble.height / 6);
         }

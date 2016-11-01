@@ -4,6 +4,8 @@ var json,
     minLast = -1,
     maxLast = -1,
     maxScore = -1,
+    minScoreComment = 0,
+    maxScoreComment = 0,
     spaceTree = document.getElementById('spaceTree'),
     spaceName = document.getElementById('spaceName'),
     spaceInc  = 0,
@@ -45,6 +47,22 @@ var readJSON = function(json, privacy) {
             else if(last > maxLast) maxLast = last;
             if(score > maxScore) maxScore = score;
         }
+
+        for(var j = 0, ll = json.items[i].comments.length; j < ll; j++) {
+            for(var k = 0, lll = json.items[i].comments[j].replies.length; k < lll; k++) {
+                score = json.items[i].comments[j].replies[k].voteScore;
+                score = typeof score !== 'undefined' ? score : 0;
+                if(score < minScoreComment) minScoreComment = score;
+                else if(score > maxScoreComment) maxScoreComment = score;
+                console.log(score);
+            }
+            score = json.items[i].comments[j].voteScore;
+            score = typeof score !== 'undefined' ? score : 0;
+            if(score < minScoreComment) minScoreComment = score;
+            else if(score > maxScoreComment) maxScoreComment = score;
+            console.log(score);
+        }
+        console.log(minScoreComment, maxScoreComment);
     }
 
     for(var i = 0, l = json.items.length; i < l; i++) {
@@ -241,6 +259,10 @@ var changeScore = function(item) {
     }
 
     for(var i = 0, l = rocks.length; i < l; i++) {
-        if(rocks[i].changeCommentScore(item)) return;
+        if(rocks[i].changeCommentScore(item)) {
+            if(item.score < minScoreComment) minScoreComment = item.score;
+            else if(item.score > maxScoreComment) maxScoreComment = item.score;
+            return;
+        }
     }
 }
