@@ -114,7 +114,11 @@ function setup() {
     strokeWeight(2);
 
     if(app.aquariumData) {
-        readJSON(app.aquariumData, true);
+        if (typeof loadData !== 'undefined') {
+            loadData();
+        } else {
+            readJSON(app.aquariumData, true);
+        }
     }
 }
 
