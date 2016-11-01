@@ -15,7 +15,7 @@ var readJSON = function(json, privacy) {
     spaceName.innerHTML = json.space.name;
     if(json.space.parent != null) {
         var a = document.createElement('a');
-        a.setAttribute('href', 'http://graasp.eu/spaces/' + json.space.parent._id + '/aquarium' + (zen ? "?zen" : ""));
+        a.setAttribute('href', '/aquarium/' + json.space.parent._id + (zen ? "?zen" : ""));
         a.classList.add('gotoParent');
         a.innerHTML = "&uarr;";
         spaceName.appendChild(a);
@@ -87,7 +87,7 @@ var addItem = function(item, intro) {
                 shape = S_CIRCLE;
                 if(spaceTree.innerHTML != '') spaceTree.innerHTML += ', ';
                 var a = document.createElement('a');
-                a.setAttribute('href', 'http://graasp.eu/spaces/' + item._id + '/aquarium' + (zen ? "?zen" : ""));
+                a.setAttribute('href', '/aquarium/' + item._id + (zen ? "?zen" : ""));
                 a.innerHTML = typeof item.name !== 'undefined' ? item.name : 'Subspace ' + spaceInc;
                 spaceTree.appendChild(a);
                 spaceInc++;
