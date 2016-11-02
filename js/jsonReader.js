@@ -48,21 +48,20 @@ var readJSON = function(json, privacy) {
             if(score > maxScore) maxScore = score;
         }
 
-        for(var j = 0, ll = json.items[i].comments.length; j < ll; j++) {
-            for(var k = 0, lll = json.items[i].comments[j].replies.length; k < lll; k++) {
-                score = json.items[i].comments[j].replies[k].voteScore;
+        if(typeof json.items[i].comments !== 'undefined') {
+            for(var j = 0, ll = json.items[i].comments.length; j < ll; j++) {
+                for(var k = 0, lll = json.items[i].comments[j].replies.length; k < lll; k++) {
+                    score = json.items[i].comments[j].replies[k].voteScore;
+                    score = typeof score !== 'undefined' ? score : 0;
+                    if(score < minScoreComment) minScoreComment = score;
+                    else if(score > maxScoreComment) maxScoreComment = score;
+                }
+                score = json.items[i].comments[j].voteScore;
                 score = typeof score !== 'undefined' ? score : 0;
                 if(score < minScoreComment) minScoreComment = score;
                 else if(score > maxScoreComment) maxScoreComment = score;
-                console.log(score);
             }
-            score = json.items[i].comments[j].voteScore;
-            score = typeof score !== 'undefined' ? score : 0;
-            if(score < minScoreComment) minScoreComment = score;
-            else if(score > maxScoreComment) maxScoreComment = score;
-            console.log(score);
         }
-        console.log(minScoreComment, maxScoreComment);
     }
 
     for(var i = 0, l = json.items.length; i < l; i++) {
