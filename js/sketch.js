@@ -195,7 +195,7 @@ function createGradient() {
         rightGradient.image(bg.get(), 0, 0, bg.width, bg.height, i, 0, 1, rightGradient.height);
     }
 
-    bottomGradient = createGraphics(width, height / 4);
+    bottomGradient = createGraphics(width, Math.floor(height / 4));
     bottomGradient.scale(1 / pixelDensity());
     for(var i = 0; i < bottomGradient.height; i++) {
         amount = clamp(remap(i, 0, bottomGradient.height - height/12, 0, 1), 0, 1);
@@ -256,7 +256,7 @@ function createBasicShapes() {
 
 function createFish() {
     for(var i = 0; i < fishBodiesImg.length; i++) {
-        var fishBody = createGraphics(fishBodiesImg[i].width/2, fishBodiesImg[i].height/2);
+        var fishBody = createGraphics(Math.floor(fishBodiesImg[i].width/2), Math.floor(fishBodiesImg[i].height/2));
         fishBody.scale(1 / pixelDensity());
         fishBody.translate(fishBody.width/2, fishBody.height/2);
         fishBody.rotate(PI);
