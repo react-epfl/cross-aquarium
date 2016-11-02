@@ -48,13 +48,15 @@ var readJSON = function(json, privacy) {
             if(score > maxScore) maxScore = score;
         }
 
-        if(typeof json.items[i].comments !== 'undefined') {
+        if (typeof json.items[i].comments !== 'undefined') {
             for(var j = 0, ll = json.items[i].comments.length; j < ll; j++) {
-                for(var k = 0, lll = json.items[i].comments[j].replies.length; k < lll; k++) {
-                    score = json.items[i].comments[j].replies[k].voteScore;
-                    score = typeof score !== 'undefined' ? score : 0;
-                    if(score < minScoreComment) minScoreComment = score;
-                    else if(score > maxScoreComment) maxScoreComment = score;
+                if (typeof json.items[i].comments[j].replies !== 'undefined') {
+                    for(var k = 0, lll = json.items[i].comments[j].replies.length; k < lll; k++) {
+                        score = json.items[i].comments[j].replies[k].voteScore;
+                        score = typeof score !== 'undefined' ? score : 0;
+                        if(score < minScoreComment) minScoreComment = score;
+                        else if(score > maxScoreComment) maxScoreComment = score;
+                    }
                 }
                 score = json.items[i].comments[j].voteScore;
                 score = typeof score !== 'undefined' ? score : 0;
@@ -248,19 +250,21 @@ var deleteMember = function(member) {
     deletedMember = null;
 }
 
-var changeScore = function(item) {
+var updateItem = function(itemData) {
     for(var i = 0, l = rocks.length; i < l; i++) {
-        if(rocks[i].id == item._id) {
-            rocks[i].score = item.voteScore;
-            if(item.voteScore > maxScore) maxScore = item.voteScore;
-            return
+        if(rocks[i].id == itemData._id) {
+            rocks[i].newAngle = 0;
+            rocks[i].score = itemData.voteScore;
+            if(itemData.voteScore > maxScore) maxScore = itemData.voteScore;
+            return;
         }
     }
 
+var updateComment = function(commentData) {
     for(var i = 0, l = rocks.length; i < l; i++) {
-        if(rocks[i].changeCommentScore(item)) {
-            if(item.score < minScoreComment) minScoreComment = item.score;
-            else if(item.score > maxScoreComment) maxScoreComment = item.score;
+        if(rocks[i].changeCommentScore(commentData)) {
+            if(commentData.score < minScoreComment) minScoreComment = commentData.score;
+            else if(commentData.score > maxScoreComment) maxScoreComment = commentData.score;
             return;
         }
     }

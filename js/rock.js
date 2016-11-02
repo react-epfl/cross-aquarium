@@ -3,6 +3,7 @@ var Rock = function(position, depth, angle, numPoint, shape, id, score, intro, i
     this.depth    = 0;
     this.newDepth = depth;
     this.angle    = angle;
+    this.newAngle = angle;
     this.numPoint = numPoint;
     this.shape    = shape;
     this.algaes   = [];
@@ -43,6 +44,8 @@ var Rock = function(position, depth, angle, numPoint, shape, id, score, intro, i
 Rock.prototype = {
     update: function() {
         this.depth += (this.newDepth - this.depth) * .05;
+
+        this.angle += (this.newAngle - this.angle) * .1;
 
         this.mainCol.r += (this.destMainCol.r - this.mainCol.r) * .025;
         this.mainCol.g += (this.destMainCol.g - this.mainCol.g) * .025;
