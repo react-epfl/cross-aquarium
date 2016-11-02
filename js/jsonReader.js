@@ -256,7 +256,7 @@ var updateItem = function(itemData) {
             rocks[i].newAngle = 0;
             rocks[i].score = itemData.voteScore;
             if(itemData.voteScore > maxScore) maxScore = itemData.voteScore;
-            return
+            return;
         }
     }
 
