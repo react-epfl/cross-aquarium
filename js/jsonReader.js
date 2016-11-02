@@ -250,19 +250,21 @@ var deleteMember = function(member) {
     deletedMember = null;
 }
 
-var changeScore = function(item) {
+var updateItem = function(itemData) {
     for(var i = 0, l = rocks.length; i < l; i++) {
-        if(rocks[i].id == item._id) {
-            rocks[i].score = item.voteScore;
-            if(item.voteScore > maxScore) maxScore = item.voteScore;
+        if(rocks[i].id == itemData._id) {
+            rocks[i].newAngle = 0;
+            rocks[i].score = itemData.voteScore;
+            if(itemData.voteScore > maxScore) maxScore = itemData.voteScore;
             return
         }
     }
 
+var updateComment = function(commentData) {
     for(var i = 0, l = rocks.length; i < l; i++) {
-        if(rocks[i].changeCommentScore(item)) {
-            if(item.score < minScoreComment) minScoreComment = item.score;
-            else if(item.score > maxScoreComment) maxScoreComment = item.score;
+        if(rocks[i].changeCommentScore(commentData)) {
+            if(commentData.score < minScoreComment) minScoreComment = commentData.score;
+            else if(commentData.score > maxScoreComment) maxScoreComment = commentData.score;
             return;
         }
     }
