@@ -89,7 +89,7 @@ Algae.prototype = {
 
     changeCommentScore: function(comment) {
         for(var i = 0, l = this.branches.length; i < l; i++) {
-            if(this.branches[i].changeCommentScore(commentId)) return true;
+            if(this.branches[i].changeCommentScore(comment)) return true;
         }
         return false;
     }

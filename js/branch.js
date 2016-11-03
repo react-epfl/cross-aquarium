@@ -193,11 +193,11 @@ Branch.prototype = {
 
     changeCommentScore: function(comment) {
         for(var i = 0, l = this.branches.length; i < l; i++) {
-            if(this.branches[i].deleteComment(commentId)) return true;
+            if(this.branches[i].changeCommentScore(comment)) return true;
         }
 
         if(this.id == comment._id) {
-            comment.score = comment.voteScore;
+            this.score = typeof comment.voteScore !== 'undefined' ? comment.voteScore : 0;
             return true;
         }
 
