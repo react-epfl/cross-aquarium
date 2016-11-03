@@ -259,6 +259,7 @@ var updateItem = function(itemData) {
             return;
         }
     }
+}
 
 var updateComment = function(commentData) {
     for(var i = 0, l = rocks.length; i < l; i++) {
