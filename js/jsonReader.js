@@ -199,6 +199,7 @@ var addComment = function(comment, itemId) {
             }
             return;
         } else if(rocks[i].id == comment.itemId) {
+            rocks[i].newAngle = 0;
             rocks[i].addBranch(comment._id, comment.voteScore, false, typeof comment.createdByCurrentUser !== 'undefined', comment.parentCommentId);
             return;
         }
