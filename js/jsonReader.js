@@ -130,7 +130,7 @@ var addItem = function(item, intro) {
         rocks.push(new Rock(new Vec2D(random(0, width), height - height/12),
                             constrain(map(age, minAge, maxAge, height/6, height/1.5), height/6, height/1.5),
                             (last > 368 ? PI/2 : constrain(map(last, minLast, maxLast, 0, PI/8), 0, PI/8)) * (random() < .5 ? -1 : 1),
-                            shape, shapes[type], item._id, item.voteScore, intro, typeof item.createdByCurrentUser !== 'undefined'));
+                            shape, shapes[type], item._id, item.voteScore, intro, item.createdByCurrentUser));
         rocks[rocks.length - 1].addAlgae();
 
         if(typeof item.comments !== 'undefined') {
@@ -191,16 +191,16 @@ var deleteItem = function(item) {
 var addComment = function(comment, itemId) {
     for(var i = 0, l = rocks.length; i < l; i++) {
         if(typeof itemId !== 'undefined' && rocks[i].id == itemId) {
-            rocks[i].addBranch(comment._id, comment.voteScore, true, typeof comment.createdByCurrentUser !== 'undefined');
+            rocks[i].addBranch(comment._id, comment.voteScore, true, comment.createdByCurrentUser);
             if(typeof comment.replies !== 'undefined') {
                 for(var j = 0, ll = comment.replies.length; j < ll; j++) {
-                    rocks[i].addBranch(comment.replies[j]._id, comment.replies[j].voteScore, true, typeof comment.createdByCurrentUser !== 'undefined', comment._id);
+                    rocks[i].addBranch(comment.replies[j]._id, comment.replies[j].voteScore, true, comment.createdByCurrentUser, comment._id);
                 }
             }
             return;
         } else if(rocks[i].id == comment.itemId) {
             rocks[i].newAngle = 0;
-            rocks[i].addBranch(comment._id, comment.voteScore, false, typeof comment.createdByCurrentUser !== 'undefined', comment.parentCommentId);
+            rocks[i].addBranch(comment._id, comment.voteScore, false, comment.createdByCurrentUser, comment.parentCommentId);
             return;
         }
     }
