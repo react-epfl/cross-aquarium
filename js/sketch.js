@@ -366,14 +366,15 @@ function draw() {
         if(frame - introBeginning == 120) intro = false;
     }
 
-    for(var i = 0, l = rocks.length; i < l; i++) {
-        var s = remap(i, 0, rocks.length - 1, .6, 1),
+    for(var i = rocks.length; i-- > 0;) {
+        var newi = (rocks.length - i - 1);
+        var s = remap(newi, 0, rocks.length - 1, .6, 1),
             offsetX = remap(mouseX, 0, width, width/3, 2 * width/3),
             offsetY = remap(mouseY, 0, height, height/3, 2 * height/3);
 
         rocks[i].display(s, offsetX, offsetY);
-        for(var j = 0, ll = displayTree[i].length; j < ll; j++) {
-            displayTree[i][j].display(s, offsetX, offsetY, fishes.length);
+        for(var j = 0, ll = displayTree[newi].length; j < ll; j++) {
+            displayTree[newi][j].display(s, offsetX, offsetY, fishes.length);
         }
 
         push();

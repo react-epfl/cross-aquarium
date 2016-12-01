@@ -128,7 +128,7 @@ var addItem = function(item, intro) {
         }
 
         rocks.push(new Rock(new Vec2D(random(0, width), height - height/12),
-                            constrain(map(age, minAge, maxAge, height/6, height/1.5), height/6, height/1.5),
+                            height/1.5 - constrain(map(age, minAge, maxAge, height/4, height/1.5), height/4, height/1.5) + height/4,
                             (last > 368 ? PI/2 : constrain(map(last, minLast, maxLast, 0, PI/8), 0, PI/8)) * (random() < .5 ? -1 : 1),
                             shape, shapes[type], item._id, item.voteScore, intro, item.createdByCurrentUser));
         rocks[rocks.length - 1].addAlgae();
