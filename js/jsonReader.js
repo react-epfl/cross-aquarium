@@ -80,12 +80,12 @@ var readJSON = function(json, privacy) {
 }
 
 var addItem = function(item, intro) {
-    if(item._type == "Alias") {
+    if(item.category == "Alias") {
         gems.push(new Gem(item._id, new Vec2D(random(width), height - height / 12)));
         displayTree[displayTree.length - 1].push(gems[gems.length - 1]);
     } else {
         var type, shape;
-        switch(item._type) {
+        switch(item.category) {
             case "Resource":
                 type  = 0;
                 shape = S_TRIANGLE;
