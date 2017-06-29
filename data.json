@@ -7718,7 +7718,7 @@
         }],
         "items": [{
                 "_id": "564dcb9ad934ac5c40ef1679",
-                "_type": "Space",
+                "category": "Space",
                 "modified": "2016-05-02T08:23:21.391Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2015-11-19T13:16:10.292Z",
@@ -7760,7 +7760,7 @@
                 "comments": []
         }, {
                 "_id": "564dcb60d934ac5c40ef1601",
-                "_type": "Space",
+                "category": "Space",
                 "modified": "2016-02-17T08:41:51.668Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2015-11-19T13:15:12.022Z",
@@ -7802,7 +7802,7 @@
                 "comments": []
         }, {
                 "_id": "54464a2652b4dc00002c0299",
-                "_type": "Space",
+                "category": "Space",
                 "modified": "2016-03-10T20:53:48.366Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2014-10-21T11:57:26.249Z",
@@ -7844,7 +7844,7 @@
                 "comments": []
         }, {
                 "_id": "564dcb68d934ac5c40ef1609",
-                "_type": "Space",
+                "category": "Space",
                 "modified": "2016-02-22T11:41:29.557Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2015-11-19T13:15:20.753Z",
@@ -7886,7 +7886,7 @@
                 "comments": []
         }, {
                 "_id": "564dcb73d934ac5c40ef1619",
-                "_type": "Space",
+                "category": "Space",
                 "modified": "2016-02-17T08:54:33.233Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2015-11-19T13:15:31.452Z",
@@ -7928,7 +7928,7 @@
                 "comments": []
         }, {
                 "_id": "564dcba8d934ac5c40ef1681",
-                "_type": "Space",
+                "category": "Space",
                 "modified": "2016-02-17T08:43:25.859Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2015-11-19T13:16:24.785Z",
@@ -7970,7 +7970,7 @@
                 "comments": []
         }, {
                 "_id": "564dcb6cd934ac5c40ef1611",
-                "_type": "Space",
+                "category": "Space",
                 "modified": "2016-02-17T08:43:43.854Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2015-11-19T13:15:24.984Z",
@@ -8011,7 +8011,7 @@
                 "comments": []
         }, {
                 "_id": "565c46e37290de252f459be6",
-                "_type": "Space",
+                "category": "Space",
                 "modified": "2016-02-17T09:13:53.163Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2015-11-30T12:53:55.201Z",
@@ -8053,7 +8053,7 @@
                 "comments": []
         }, {
                 "_id": "5667fadc5bc779b00097992f",
-                "_type": "Space",
+                "category": "Space",
                 "modified": "2016-02-17T08:44:30.700Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2015-12-09T09:56:44.333Z",
@@ -8095,7 +8095,7 @@
                 "comments": []
         }, {
                 "_id": "565c23b67290de252f4565cb",
-                "_type": "Space",
+                "category": "Space",
                 "modified": "2016-02-17T08:47:23.004Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2015-11-30T10:23:50.047Z",
@@ -8137,7 +8137,7 @@
                 "comments": []
         }, {
                 "_id": "568bf7c63e2aa77684274f8d",
-                "_type": "Space",
+                "category": "Space",
                 "modified": "2016-02-18T08:53:59.331Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2016-01-05T17:05:10.684Z",
@@ -8179,7 +8179,7 @@
                 "comments": []
         }, {
                 "_id": "56c43c32a4b47793626087e8",
-                "_type": "Topic",
+                "category": "Topic",
                 "modified": "2016-02-17T09:24:03.683Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2016-02-17T09:24:02.939Z",
@@ -8225,7 +8225,7 @@
                 }]
         }, {
                 "_id": "56deea8f8ec40f13fc92dfe1",
-                "_type": "Alias",
+                "category": "Alias",
                 "modified": "2016-03-08T15:06:56.861Z",
                 "path": "~5356b1eaab6d8066cfbbd514~537b14fd0736990000170a5b~",
                 "created": "2016-03-08T15:06:55.686Z"
